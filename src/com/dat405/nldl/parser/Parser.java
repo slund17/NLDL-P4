@@ -981,13 +981,7 @@ public class Parser
 
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
         PS psNode1;
-        {
-            // Block
-        PV pvNode2;
-        pvNode2 = (PV)nodeArrayList1.get(0);
-
-        psNode1 = new AConstantS(pvNode2);
-        }
+        psNode1 = (PS)nodeArrayList1.get(0);
 	nodeList.add(psNode1);
         return nodeList;
     }
@@ -1000,15 +994,15 @@ public class Parser
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
-        PV pvNode1;
+        PS psNode1;
         {
             // Block
         TConst tconstNode2;
         tconstNode2 = (TConst)nodeArrayList1.get(0);
 
-        pvNode1 = new ANumV(tconstNode2);
+        psNode1 = new ANumS(tconstNode2);
         }
-	nodeList.add(pvNode1);
+	nodeList.add(psNode1);
         return nodeList;
     }
 
@@ -1020,15 +1014,15 @@ public class Parser
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
-        PV pvNode1;
+        PS psNode1;
         {
             // Block
         TString tstringNode2;
         tstringNode2 = (TString)nodeArrayList1.get(0);
 
-        pvNode1 = new AStringV(tstringNode2);
+        psNode1 = new AStringS(tstringNode2);
         }
-	nodeList.add(pvNode1);
+	nodeList.add(psNode1);
         return nodeList;
     }
 
@@ -1040,15 +1034,15 @@ public class Parser
         @SuppressWarnings("hiding") ArrayList<Object> nodeList = new ArrayList<Object>();
 
         @SuppressWarnings("unused") ArrayList<Object> nodeArrayList1 = pop();
-        PV pvNode1;
+        PS psNode1;
         {
             // Block
         PIp pipNode2;
         pipNode2 = (PIp)nodeArrayList1.get(0);
 
-        pvNode1 = new AIpV(pipNode2);
+        psNode1 = new AIpS(pipNode2);
         }
-	nodeList.add(pvNode1);
+	nodeList.add(psNode1);
         return nodeList;
     }
 

@@ -220,25 +220,67 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAIdentifierS(node);
     }
 
-    public void inAConstantS(AConstantS node)
+    public void inANumS(ANumS node)
     {
         defaultIn(node);
     }
 
-    public void outAConstantS(AConstantS node)
+    public void outANumS(ANumS node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAConstantS(AConstantS node)
+    public void caseANumS(ANumS node)
     {
-        inAConstantS(node);
-        if(node.getV() != null)
+        inANumS(node);
+        if(node.getConst() != null)
         {
-            node.getV().apply(this);
+            node.getConst().apply(this);
         }
-        outAConstantS(node);
+        outANumS(node);
+    }
+
+    public void inAStringS(AStringS node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAStringS(AStringS node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAStringS(AStringS node)
+    {
+        inAStringS(node);
+        if(node.getString() != null)
+        {
+            node.getString().apply(this);
+        }
+        outAStringS(node);
+    }
+
+    public void inAIpS(AIpS node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAIpS(AIpS node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAIpS(AIpS node)
+    {
+        inAIpS(node);
+        if(node.getIp() != null)
+        {
+            node.getIp().apply(this);
+        }
+        outAIpS(node);
     }
 
     public void inAGroupDcl(AGroupDcl node)
@@ -267,69 +309,6 @@ public class DepthFirstAdapter extends AnalysisAdapter
             }
         }
         outAGroupDcl(node);
-    }
-
-    public void inANumV(ANumV node)
-    {
-        defaultIn(node);
-    }
-
-    public void outANumV(ANumV node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseANumV(ANumV node)
-    {
-        inANumV(node);
-        if(node.getConst() != null)
-        {
-            node.getConst().apply(this);
-        }
-        outANumV(node);
-    }
-
-    public void inAStringV(AStringV node)
-    {
-        defaultIn(node);
-    }
-
-    public void outAStringV(AStringV node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseAStringV(AStringV node)
-    {
-        inAStringV(node);
-        if(node.getString() != null)
-        {
-            node.getString().apply(this);
-        }
-        outAStringV(node);
-    }
-
-    public void inAIpV(AIpV node)
-    {
-        defaultIn(node);
-    }
-
-    public void outAIpV(AIpV node)
-    {
-        defaultOut(node);
-    }
-
-    @Override
-    public void caseAIpV(AIpV node)
-    {
-        inAIpV(node);
-        if(node.getIp() != null)
-        {
-            node.getIp().apply(this);
-        }
-        outAIpV(node);
     }
 
     public void inAVariablesGroupBlock(AVariablesGroupBlock node)

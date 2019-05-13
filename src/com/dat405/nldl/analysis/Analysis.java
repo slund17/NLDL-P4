@@ -19,11 +19,10 @@ public interface Analysis extends Switch
     void caseASettingDcl(ASettingDcl node);
     void caseASettingBlock(ASettingBlock node);
     void caseAIdentifierS(AIdentifierS node);
-    void caseAConstantS(AConstantS node);
+    void caseANumS(ANumS node);
+    void caseAStringS(AStringS node);
+    void caseAIpS(AIpS node);
     void caseAGroupDcl(AGroupDcl node);
-    void caseANumV(ANumV node);
-    void caseAStringV(AStringV node);
-    void caseAIpV(AIpV node);
     void caseAVariablesGroupBlock(AVariablesGroupBlock node);
     void caseASettingGroupBlock(ASettingGroupBlock node);
     void caseAGroupGroupBlock(AGroupGroupBlock node);

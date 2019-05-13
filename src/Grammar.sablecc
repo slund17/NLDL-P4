@@ -148,12 +148,12 @@ Productions
 
     setting_stmt{-> s} =
         {identifier} identifier {-> New s.identifier(identifier)}|
-        {constant} constant {-> New s.constant(constant.v)};
+        {constant} constant {-> constant.s};
 
-    constant {-> v} =
-        {num} num {-> New v.num(num.const)}|
-        {string} string {-> New v.string(string)}|
-        {ip} ip_address {-> New v.ip(ip_address.ip)};
+    constant {-> s} =
+        {num} num {-> New s.num(num.const)}|
+        {string} string {-> New s.string(string)}|
+        {ip} ip_address {-> New s.ip(ip_address.ip)};
 
 
     num {-> const} = const {-> const};
@@ -218,11 +218,11 @@ setting_dcl = var setting_block*;
 setting_block = protocol? s*;
 
 s =     {identifier} identifier |
-        {constant} v;
+        {num}const | {string}string | {ip}ip;
 
 group_dcl = var group_block*;
 
-v = {num}const | {string}string | {ip}ip;
+/*v = {num}const | {string}string | {ip}ip;*/
 
 group_block = {variables} var*
     | {setting} setting_block

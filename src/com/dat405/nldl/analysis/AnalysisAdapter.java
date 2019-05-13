@@ -117,31 +117,25 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseAConstantS(AConstantS node)
+    public void caseANumS(ANumS node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAStringS(AStringS node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAIpS(AIpS node)
     {
         defaultCase(node);
     }
 
     @Override
     public void caseAGroupDcl(AGroupDcl node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseANumV(ANumV node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseAStringV(AStringV node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseAIpV(AIpV node)
     {
         defaultCase(node);
     }
