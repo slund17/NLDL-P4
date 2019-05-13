@@ -1,0 +1,249 @@
+
+Package com.dat405.nldl;
+
+/*********************************
+* Begin Helpers ******************
+*********************************/
+Helpers
+
+    ascii_character     = [0..0xff];
+    ascii_small         = ['a'..'z'];
+    ascii_caps          = ['A'..'Z'];
+    unicode_character   = [0..0xffff];
+    semi = ';';
+    comma = ',';
+
+    sp  = ' ';
+    lf	= 0x000a;
+    cr	= 0x000d;
+    ff  = 0x0c;
+    ht  = 0x09;
+
+    line_terminator	=	lf | cr | cr lf;
+
+    a = 'a' | 'A';
+    b = 'b' | 'B';
+    c = 'c' | 'C';
+    d = 'd' | 'D';
+    e = 'e' | 'E';
+    f = 'f' | 'F';
+    g = 'g' | 'G';
+    h = 'h' | 'H';
+    i = 'i' | 'I';
+    j = 'j' | 'J';
+    k = 'k' | 'K';
+    l = 'l' | 'L';
+    m = 'm' | 'M';
+    n = 'n' | 'N';
+    o = 'o' | 'O';
+    p = 'p' | 'P';
+    q = 'q' | 'Q';
+    r = 'r' | 'R';
+    s = 's' | 'S';
+    t = 't' | 'T';
+    u = 'u' | 'U';
+    v = 'v' | 'V';
+    w = 'w' | 'W';
+    x = 'x' | 'X';
+    y = 'y' | 'Y';
+    z = 'z' | 'Z';
+
+    digit               = ['0'..'9'];
+    letter              = ascii_small | ascii_caps | '_' | '-';
+    letter_or_digit     = letter | digit;
+
+    /*
+        ip_segment =  '25'['0'..'5'] | '2'['0'..'4']['0'..'9'] | ('0'|'1')?['0'..'9']['0'..'9']?;
+        ip_address = ip_segment '.' ip_segment '.' ip_segment '.' ip_segment;
+        ip_shorthand = '.' ip_segment '.' ip_segment '.' ip_segment |  '.' ip_segment '.' ip_segment |  '.' ip_segment;
+        p_interface = 'fa' digit+ '/' digit+;
+    */
+
+/*********************************
+* Begin Tokens *******************
+*********************************/
+Tokens
+
+    /*********************
+    * Begin IDL Keywords *
+    *********************/
+    router = r o u t e r;
+    group = g r o u p;
+    segment = s e g m e n t;
+    settings = s e t t i n g s;
+    setting = s e t t i n g;
+    connection = c o n n e c t i o n;
+    ip_keyword = i p;
+    main = m a i n;
+
+    dot = '.';
+
+    interface_type = f | g | e;
+
+    /*ip_address = ip_address;*/
+    /*ip_shorthand = ip_shorthand;*/
+
+
+    /*p_interface = p_interface;*/
+
+    protocol = 'OSPF' | 'ISIS' | 'DNS';
+
+    const = digit+;
+
+    equal = '=';
+
+    l_parenthesis = '(';
+    r_parenthesis = ')';
+    l_brace = '{';
+    r_brace = '}';
+    l_bracket = '[';
+    r_bracket = ']';
+
+    arrow = '->';
+
+    slash ='/';
+
+    semi = semi;
+    comma = comma;
+    blank = (sp | ht | ff | line_terminator)*;
+
+    string = '"' letter_or_digit* '"';
+
+    comment = '/*' unicode_character* '*/';
+
+    identifier = letter letter_or_digit*;
+
+
+/*********************************
+* Begin Ignored Tokens ***********
+*********************************/
+Ignored Tokens
+    blank, comment;
+
+/*********************************
+* Begin Production ***************
+*********************************/
+Productions
+
+    program{-> program} = device_dcl+ setting_dcl* group_dcl+;
+
+    device_dcl {-> device_dcl}=
+         {router} router_dcl {-> router_dcl.device_dcl}|
+         {segment} segment_dcl {-> segment_dcl.device_dcl};
+
+    router_dcl{-> device_dcl} = router identifier_list semi {-> New device_dcl.router([identifier_list.var])};
+
+    segment_dcl{-> device_dcl} = segment identifier_list semi {-> New device_dcl.segment([identifier_list.var])};
+
+    identifier_list{-> var*} =
+        identifier identifier_tail* {-> [New var(identifier), identifier_tail.var]}
+        ;
+
+    identifier_tail{-> var} =
+        comma identifier {-> New var(identifier)};
+
+    setting_dcl{-> setting_dcl} = settings identifier l_brace setting_def* r_brace {-> New setting_dcl(New var(identifier), [setting_def.setting_block])};
+
+    setting_def{-> setting_block} = protocol? setting_stmt+ semi {-> New setting_block(protocol, [setting_stmt.s])};
+
+    setting_stmt{-> s} =
+        {identifier} identifier {-> New s.identifier(identifier)}|
+        {constant} constant {-> New s.constant(constant.v)};
+
+    constant {-> v} =
+        {num} num {-> New v.num(num.const)}|
+        {string} string {-> New v.string(string)}|
+        {ip} ip_address {-> New v.ip(ip_address.ip)};
+
+
+    num {-> const} = const {-> const};
+
+    group_dcl {-> group_dcl} = group identifier l_brace ip_dcl? group_lines+ r_brace {-> New group_dcl(New var(identifier), [ip_dcl.group_block, group_lines.group_block])};
+
+    group_lines {-> group_block}=
+        {list} list_statement {-> New group_block.variables([list_statement.var])}|
+        {setting} setting setting_def {-> New group_block.setting(setting_def.setting_block)} |
+        {group} group_dcl {-> New group_block.group(group_dcl.group_dcl)}|
+        {connection} connection_dcl {-> New group_block.connection(connection_dcl.connection_dcl)}|
+        {assignment} connection_assignment {-> connection_assignment.group_block};
+
+    list_statement {-> var*} = identifier_list semi {-> [identifier_list.var]};
+
+    ip_dcl {-> group_block} = ip_keyword ip_address semi {-> New group_block.ip(ip_address.ip)};
+
+    connection_assignment {-> group_block}= connection identifier equal connection_dcl {-> New group_block.ass(New var(identifier), connection_dcl.connection_dcl)};
+
+    connection_dcl {-> connection_dcl}=
+        {short} connection_short_dcl semi {-> connection_short_dcl.connection_dcl}|
+        {long} connection_long_dcl {-> connection_long_dcl.connection_dcl};
+
+    connection_short_dcl {-> connection_dcl}=
+        {rr} [first]:connector arrow [second]:connector {-> New connection_dcl.rr(first.connector, second.connector)} |
+        {rs} [first]:connector arrow identifier {-> New connection_dcl.rs(first.connector, New var(identifier))};
+
+    connector {-> connector}=
+        {router} identifier l_parenthesis ip_thingy slash const comma p_interface r_parenthesis {-> New connector(New var(identifier), ip_thingy.ip, const, p_interface.if)};
+
+    ip_thingy {-> ip}=
+        {long} ip_address {-> ip_address.ip} |
+        {short} ip_shorthand  {-> ip_shorthand.ip};
+
+    ip_address {-> ip} = [seg0]:num [d0]:dot [seg1]:num [d1]:dot [seg2]:num [d2]:dot [seg3]:num {-> New ip.four(seg0.const, seg1.const, seg2.const, seg3.const)};
+
+    ip_shorthand {-> ip}=
+        {one} [d2]:dot [seg3]:num {-> New ip.one(seg3.const)}|
+        {two} [d1]:dot [seg2]:num [d2]:dot [seg3]:num {-> New ip.two(seg2.const, seg3.const)} |
+        {three} [d0]:dot [seg1]:num [d1]:dot [seg2]:num [d2]:dot [seg3]:num {-> New ip.three(seg1.const, seg2.const, seg3.const)};
+
+    p_interface {-> if}=
+        {single} interface_type num {-> New if.one(interface_type, num.const)}|
+        {double} interface_type [first]:num slash [second]:num {-> New if.two(interface_type, first.const, second.const)};
+
+    connection_long_dcl {-> connection_dcl} = connection l_brace [first]:connector_statement [list]:connector_statement+ r_brace {-> New connection_dcl.multi([first.connector, list.connector])};
+
+    connector_statement {-> connector} = connector semi {-> connector.connector};
+
+Abstract Syntax Tree
+program = device_dcl* setting_dcl* group_dcl*;
+
+
+device_dcl = {router} var*
+    | {segment} var*
+    ;
+
+var = identifier;
+
+setting_dcl = var setting_block*;
+
+setting_block = protocol? s*;
+
+s =     {identifier} identifier |
+        {constant} v;
+
+group_dcl = var group_block*;
+
+v = {num}const | {string}string | {ip}ip;
+
+group_block = {variables} var*
+    | {setting} setting_block
+    | {group} group_dcl
+    | {connection} connection_dcl
+    | {ip} ip
+    | {ass} var connection_dcl
+    ;
+
+
+connection_dcl = {rr} [first]:connector [second]:connector
+    | {rs} [first]:connector var
+    | {multi} connector*
+    ;
+
+if = {two}interface_type [first]:const [second]:const | {one}interface_type [first]:const;
+
+connector = var ip const if;
+
+ip = {four} [seg1]:const [seg2]:const [seg3]:const [seg4]:const
+    | {three} [seg2]:const [seg3]:const [seg4]:const
+    | {two} [seg3]:const [seg4]:const
+    | {one} [seg4]:const
+    ;

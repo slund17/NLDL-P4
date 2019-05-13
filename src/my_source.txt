@@ -1,0 +1,69 @@
+Router R1, R2, R3, R4;
+Segment S1, S2;
+Router R5, R19, R20;
+Segment S3;
+
+/*This is a comment*/
+Settings DefaultOSPF{
+	dead-interval;
+	OSPF hello-interval 50;
+}
+
+Settings DefaultOSPF2{
+    OSPF dead-interval 200;
+    OSPF hello-interval 10;
+}
+
+Group theWholeNetwork{
+    DefaultOSPF;
+    Setting DNS server 8.8.8.8;
+
+    R1;
+    R2;
+    R4;
+
+    Group area0{
+        IP 10.0.0.0;
+
+        DefaultOSPF2;
+        Setting OSPF hello- 8.8.4.4 555 interval 9000;
+
+        Setting DNS server 8.8.4.4;
+        Setting OSPF area 0;
+
+        R3;
+        R19;
+        R20;
+
+        R1(10.10.0.1/24, f 0/17)->S3;
+        R20(10.20.0.1/24, f 0/17)->S2;
+
+        R1(.1/30, f 0/1)->R2(.2/30, f 0/1);
+        R2(.5/30, f 0/2)->R3(.6/30, f 0/2);
+        R3(192.168.0.1/30, f 0/3)->R4(192.168.0.2/30, f 0/3);
+
+        Connection forbindelseNummer1 = Connection{
+            R1(.35/24, f 0/7);
+            R19(.36/24, f 0/11);
+            R20(.37/24, f 0/15);
+        }
+    }
+
+    Group area1{
+        IP 10.200.0.0;
+
+        Setting OSPF area 1;
+
+        Connection forbindelseNummer2 = R4(.1/30, f 0/3)->R5(.2/30, f 0/1);
+
+    }
+
+    Group allNonPointToPoint{
+        Setting OSPF hello-interval 1000;
+        Setting OSPF dead-interval 2000;
+
+        forbindelseNummer1;
+        forbindelseNummer2;
+    }
+
+}
