@@ -1,6 +1,8 @@
 package visitors;
 
 import com.dat405.nldl.analysis.DepthFirstAdapter;
+import com.dat405.nldl.node.AGroupDcl;
+import com.dat405.nldl.node.AVariablesGroupBlock;
 import com.dat405.nldl.node.Node;
 import com.dat405.nldl.node.Start;
 
@@ -14,5 +16,10 @@ public class PrintVisitor extends DepthFirstAdapter {
     @Override
     public void defaultIn(Node node) {
         System.out.println(node.getClass() + " " + node);
+    }
+
+    @Override
+    public void inAGroupDcl(AGroupDcl node) {
+        super.inAGroupDcl(node);
     }
 }
