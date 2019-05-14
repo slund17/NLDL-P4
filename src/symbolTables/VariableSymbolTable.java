@@ -10,7 +10,6 @@ public abstract class VariableSymbolTable<T> {
 
     void enterSymbol(AVar var, T symbol){
         table.put(var.getIdentifier().getText(), symbol);
-
     }
 
     T retrieveSymbol(AVar var){

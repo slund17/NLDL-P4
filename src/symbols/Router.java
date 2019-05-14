@@ -1,10 +1,7 @@
 package symbols;
 
-import com.dat405.nldl.node.AOneIf;
 import com.dat405.nldl.node.ASettingBlock;
-import com.dat405.nldl.node.ATwoIf;
 import com.dat405.nldl.node.PIf;
-import symbolTables.InterfaceSymbolTable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,11 +16,9 @@ public class Router {
         interfaceTable.put(new InterfaceIndex(inf), new PhysicalInterface());
     }
 
-
     void enterSetting(ASettingBlock setting){
-        settingTable.add(new Setting(setting));
+        settingTable.add(Setting.getSetting(setting));
     }
-
 
 }
 
