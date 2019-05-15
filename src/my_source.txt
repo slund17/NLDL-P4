@@ -1,67 +1,114 @@
-Router R1, R2, R3, R4;
-Segment S1, S2;
-Router R5, R19, R20;
-Segment S3;
+Router R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13;
+Router R14, R15, R16, R17, R18, R19, R20, R21, R22, R23, R24;
 
-/*This is a comment*/
-Settings DefaultOSPF{
-	OSPF dead-interval 10;
-	OSPF hello-interval 50;
+Settings test2{
+	OSPF hello-interval 3;
+	OSPF dead-interval 5;
 }
 
-Settings DefaultOSPF2{
-    OSPF dead-interval 200;
-    OSPF hello-interval 10;
+Settings test1{
+	OSPF hello-interval 10;
+	OSPF dead-interval 2;
 }
 
-Group theWholeNetwork{
-    DefaultOSPF;
 
-    R1;
-    R2;
-    R4;
+Group area3{
+	IP 10.3.2.0;
 
-    Group area0{
-        IP 10.0.0.0;
+	Setting OSPF Area 3 totally-stub;
+	Setting OSPF Network point-to-point;
 
-        DefaultOSPF2;
-        Setting OSPF hello-interval 9000;
+	R18(.1/30, f0/0)->R19(.2/30, f1/0);
+	R19(.5/30, f0/1)->R16(.6/30, f0/1);
+	R19(.10/30, f0/0)->R17(.9/30, f0/1);
+	R16(.14/30, f0/0)->R17(.13/30, f2/0);
+	R17(.17/30, f0/0)->R15(.18/30, f0/1);
 
-        Setting DNS server 8.8.4.4;
-        Setting OSPF area 0;
+	Group border{
+		Setting OSPF Network broadcast;
 
-        R3;
-        R19;
+		R15(.21/30, f0/0)->R14(.22/30, f0/1);
+		R17(.25/30, f1/0)->R14(.26/30, f1/0);
+	}
+}
 
-        R1(10.10.0.1/24, f 0/17)->S3;
-        R20(10.20.0.1/24, f 0/17)->S2;
+Group area0{
+	IP 10.0.0.0;
+	Setting OSPF Area 0;
 
-        R1(.1/30, f 0/1)->R2(.2/30, f 0/1);
-        R2(.5/30, f 0/2)->R3(.6/30, f 0/2);
-        R3(192.168.0.1/30, f 0/3)->R4(192.168.0.2/30, f 0/3);
 
-        Connection forbindelseNummer1 = Connection{
-            R1(.35/24, f 0/7);
-            R19(.36/24, f 0/11);
-            R20(.37/24, f 0/15);
-        }
-    }
+	Connection b4 = Connection{
+		R13(.1/24, f0/0);
+		R12(.20/24, f0/0);
+		R10(.3/24, f0/1);
+		R11(.2/24, f0/0);
+	}
 
-    Group area1{
-        IP 10.200.0.0;
+	Group ptp{
+		Setting OSPF Network point-to-point;
+		R14(.255.1/30, f0/0)->R13(.255.1/30, f0/1);
+		R12(.255.6/30, f0/1)->R20(.255.5/30, f0/0);
+		R10(.255.9/30, f0/0)->R9(.255.10/30, f0/1);
+		R10(.255.14/30, f1/0)->R5(.255.13/30, f0/1);
+	}
+}
 
-        Setting OSPF area 1;
+Group area4{
+	IP 10.4.0.0;
+	Setting OSPF Area 4;
 
-        Connection forbindelseNummer2 = R4(.1/30, f 0/3)->R5(.2/30, f 0/1);
+	Connection b3 = Connection{
+		R20(.1/24, f0/1);
+		R21(.2/24, f0/0);
+		R22(.3/24, f0/0);
+	}
 
-    }
+	Group ptp{
+		Setting OSPF Network point-to-point;
+		R21(.100.1/24, f0/1)->PC-6;
+		R22(.101.1/24, f0/1)->PC-5;
+	}
+}
 
-    Group allNonPointToPoint{
-        Setting OSPF hello-interval 1000;
-        Setting OSPF dead-interval 2000;
+Group area2{
+	IP 10.2.30.0;
+	Setting OSPF Area 2;
 
-        forbindelseNummer1;
-        forbindelseNummer2;
-    }
+	Connection b2 = Connection{
+		R5(.4/29, f0/0);
+		R3(.1/29, f0/0);
+		R1(.2/29, f0/0);
+		R2(.3/29, f0/0);
+	}
 
+	Group ptp{
+		Setting OSPF Network point-to-point;
+		R2(.0.2/30, f0/1)->R23(.0.1/30, f0/0);
+	}
+}
+
+Group area1{
+	IP 10.1.0.0;
+	Setting OSPF Area 1;
+
+	Connection b1 = Connection{
+		R8(.10/24, f0/0);
+		R7(.11/24, f0/0);
+		R6(.12/24, f0/0);
+		R4(.13/24, f0/0);
+	}
+
+	Group ptp{
+		Setting OSPF Network point-to-point;
+		R9(.1/30, f0/0)->R4(.2/30, f0/1);
+		R4(.5/30, f1/0)->R24(.6/30, f0/0);
+		R24(.9/30, f0/1)->R8(.10/30, f0/1);
+	}
+}
+
+Group broadcasts{
+	Setting OSPF Network broadcast;
+	Setting OSPF hello-interval 100;
+	Setting OSPF dead-interval 50;
+	b1, b2, b3, b4;
 }

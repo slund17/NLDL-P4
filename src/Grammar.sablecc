@@ -59,6 +59,13 @@ Helpers
         p_interface = 'fa' digit+ '/' digit+;
     */
 
+
+/****************************
+* Begin States **************
+****************************/
+States
+    outside, inside;
+
 /*********************************
 * Begin Tokens *******************
 *********************************/
@@ -92,8 +99,8 @@ Tokens
 
     equal = '=';
 
-    l_parenthesis = '(';
-    r_parenthesis = ')';
+    {outside->inside} l_parenthesis = '(';
+    {inside->outside} r_parenthesis = ')';
     l_brace = '{';
     r_brace = '}';
     l_bracket = '[';
@@ -111,7 +118,7 @@ Tokens
 
     comment = '/*' unicode_character* '*/';
 
-    identifier = letter letter_or_digit*;
+    {outside} identifier = letter letter_or_digit*;
 
 
 /*********************************
