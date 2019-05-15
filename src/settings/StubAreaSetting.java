@@ -1,8 +1,8 @@
 package settings;
 
-public class StubAreaSetting extends InterfaceSetting {
+public class StubAreaSetting extends AreaSetting {
 
     public StubAreaSetting(int value) {
-        super(SettingType.OSPF_AREA_STUB);
+        super(value);
     }
 }

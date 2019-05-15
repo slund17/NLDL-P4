@@ -10,7 +10,17 @@ public class Predicates {
 
     public static Predicate<Object> isIdentifier(String string){
         return (x->{
-            return x instanceof String && ((String) x).equalsIgnoreCase(string);
+            return x instanceof String && ((String)x).equalsIgnoreCase(string);
+        });
+    }
+
+    public static Predicate<Object> isIdentifierAnyOf(String... string){
+        return (x->{
+            if(!(x instanceof  String)) return false;
+            for (String s : string) {
+                if(((String)x).equalsIgnoreCase(s)) return true;
+            }
+            return false;
         });
     }
 

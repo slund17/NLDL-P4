@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings({"unchecked"})
 public abstract class Setting {
 
     private final SettingType settingType;
@@ -43,6 +44,14 @@ public abstract class Setting {
                 new SettingRecognizer<StubAreaSetting>(l->{
                     return new StubAreaSetting((Integer) l.get(1));
                 }, Predicates.isIdentifier("Area"), Predicates.isPosNum(), Predicates.isIdentifier("Stub")),
+                //OSPF Area %num% totally-stub
+                new SettingRecognizer<TotallyStubAreaSetting>(l->{
+                    return new TotallyStubAreaSetting((Integer) l.get(1));
+                }, Predicates.isIdentifier("Area"), Predicates.isPosNum(), Predicates.isIdentifier("totally-stub")),
+                //OSPF Network %type%
+                new SettingRecognizer<NetworkTypeSetting>(l->{
+                    return new NetworkTypeSetting((String) l.get(1));
+                }, Predicates.isIdentifier("Network"), Predicates.isIdentifierAnyOf("point-to-point", "broadcast", "non-broadcast", "point-to-multipoint")),
                 //OSPF hello-interval %num%
                 new SettingRecognizer<HelloIntervalSetting>(l->{
             return new HelloIntervalSetting((Integer) l.get(1));
@@ -58,7 +67,11 @@ public abstract class Setting {
                 new SettingRecognizer<DNSServerSetting>(l->{
                     IpAddress ip = (IpAddress) l.get(2);
                     return new DNSServerSetting(ip);
-                }, Predicates.isIdentifier("DNS"), Predicates.isIdentifier("server"), Predicates.isIp())
+                }, Predicates.isIdentifier("DNS"), Predicates.isIdentifier("server"), Predicates.isIp()),
+                new SettingRecognizer<RouterIDSetting>(l->{
+                    IpAddress ip = (IpAddress) l.get(2);
+                    return new RouterIDSetting(ip);
+                }, Predicates.isIdentifier("Router"), Predicates.isIdentifier("ID"), Predicates.isIp())
         ) );
     }
 
