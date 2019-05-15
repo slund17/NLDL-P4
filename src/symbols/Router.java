@@ -12,8 +12,8 @@ public class Router {
     Map<InterfaceIndex, PhysicalInterface > interfaceTable = new HashMap<>();
     Set<Setting> settingTable = new HashSet<>();
 
-    void enterInterface(PIf inf){
-        interfaceTable.put(new InterfaceIndex(inf), new PhysicalInterface(this));
+    void enterInterface(InterfaceIndex inf){
+        interfaceTable.put(inf, new PhysicalInterface(this));
     }
 
     void enterSetting(ASettingBlock setting){

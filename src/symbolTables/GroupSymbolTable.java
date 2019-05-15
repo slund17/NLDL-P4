@@ -5,15 +5,15 @@ import symbols.Group;
 public class GroupSymbolTable {
     Group group = null;
 
-    void openScope(){
+    public void openScope(){
         group = new Group(group);
     }
 
-    void closeScope(){
+    public void closeScope(){
         group = group.getParent();
     }
 
-    Group retrieveGroup(){
+    public Group retrieveGroup(){
         return group;
     }
 }

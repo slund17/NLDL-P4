@@ -7,6 +7,7 @@ import com.dat405.nldl.node.Start;
 import com.dat405.nldl.parser.Parser;
 import com.dat405.nldl.parser.ParserException;
 import visitors.PrintVisitor;
+import visitors.SemanticsVisitor;
 
 import java.io.*;
 
@@ -15,7 +16,9 @@ public class Main {
     public static void main(String[] args) throws IOException, ParserException, LexerException {
         Parser parser = createParser();
         Start start = parser.parse();
-        start.apply(new PrintVisitor());
+        SemanticsVisitor semantics = new SemanticsVisitor();
+        start.apply(semantics);
+        //start.apply(new PrintVisitor());
     }
 
     public static Parser createParser() throws ParserException, IOException, LexerException {

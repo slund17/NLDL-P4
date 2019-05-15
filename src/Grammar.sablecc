@@ -78,7 +78,7 @@ Tokens
 
     dot = '.';
 
-    interface_type = f | g | e;
+    interface_type = f | f e | g | g b | e;
 
     /*ip_address = ip_address;*/
     /*ip_shorthand = ip_shorthand;*/
