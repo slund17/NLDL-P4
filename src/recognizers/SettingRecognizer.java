@@ -1,12 +1,13 @@
 package recognizers;
 
 import com.dat405.nldl.node.PS;
+import symbols.Setting;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
 
-public class SettingRecognizer<T> {
+public class SettingRecognizer<T extends Setting> {
     public ClassCreator<T> classCreator;
     public List<TokenPredicate> predicates;
 

@@ -9,7 +9,7 @@ public class Predicates {
 
     public static TokenPredicate isIdentifier(String string){
         return ((TokenPredicate)x->{
-            return x instanceof AIdentifierS && ((AIdentifierS) x).getIdentifier().getText().equals(string);
+            return x instanceof AIdentifierS && ((AIdentifierS) x).getIdentifier().getText().equalsIgnoreCase(string);
         });
     }
 

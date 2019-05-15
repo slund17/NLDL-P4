@@ -19,7 +19,7 @@ public class Setting {
     public static List<SettingRecognizer<? extends Setting>> ROUTER_settings;
 
     static{
-        OSPF_settings.addAll((List<SettingRecognizer<? extends Setting>>)Arrays.asList(
+        OSPF_settings.addAll(Arrays.asList(
                 //OSPF Area %num%
                 new SettingRecognizer<AreaSetting>(l->{
                     int num = Integer.valueOf(((ANumS)l.get(1)).getConst().getText());
@@ -40,14 +40,17 @@ public class Setting {
                     int num = Integer.valueOf(((ANumS)l.get(1)).getConst().getText());
                     return new DeadIntervalSetting(num);
                 }, Predicates.isIdentifier("dead-interval"), Predicates.isPosNum())
+        ) );
+
+        ROUTER_settings.addAll(Arrays.asList(
 
         ) );
     }
 
     public static Setting getSetting(ASettingBlock settingBlock){
-        switch (settingBlock.getProtocol().getText()){
+        switch (settingBlock.getProtocol().getText().toUpperCase()){
             case "OSPF": return findMatch(OSPF_settings, settingBlock);
-            case "Router": return findMatch(ROUTER_settings, settingBlock);
+            case "ROUTER": return findMatch(ROUTER_settings, settingBlock);
             default: throw new RuntimeException("Unknown Protocol.");
         }
     }
