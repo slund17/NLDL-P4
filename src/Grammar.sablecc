@@ -86,7 +86,7 @@ Tokens
 
     /*p_interface = p_interface;*/
 
-    protocol = 'OSPF' | 'ISIS' | 'DNS';
+    protocol = o s p f | i s i s;
 
     const = digit+;
 

@@ -1,10 +1,8 @@
 package settings;
 
-import symbols.Setting;
-
-public class StubAreaSetting extends AreaSetting {
+public class StubAreaSetting extends InterfaceSetting {
 
     public StubAreaSetting(int value) {
-        super(value);
+        super(SettingType.OSPF_AREA_STUB);
     }
 }

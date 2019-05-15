@@ -1,9 +1,7 @@
 package symbols;
 
-import com.dat405.nldl.node.ASettingBlock;
-import com.dat405.nldl.node.PIf;
-import com.dat405.nldl.node.PIp;
-import com.dat405.nldl.node.TConst;
+import settings.InterfaceSetting;
+import settings.Setting;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,7 +10,7 @@ public class PhysicalInterface {
 
     private final Router router;
 
-    Set<Setting> settingTable = new HashSet<>();
+    Set<InterfaceSetting> settingTable = new HashSet<>();
     IpAddress ip = null;
     Integer mask = null;
 
@@ -20,16 +18,15 @@ public class PhysicalInterface {
         this.router = router;
     }
 
-    void enterSetting(ASettingBlock setting){
-        settingTable.add(Setting.getSetting(setting));
+    public void enterSetting(InterfaceSetting setting){
+        settingTable.add(setting);
     }
 
-    void enterIP(PIp pip, Group group){
-        this.ip = new IpAddress(pip, group);
+    public void enterIP(IpAddress ip){
+        this.ip = ip;
     }
 
-    void enterMask(TConst mask){
-        int value = Integer.valueOf(mask.getText());
+    public void enterMask(int value){
         if(value>32 || value<0){
             throw new RuntimeException("Mask incorrect");
         }

@@ -1,6 +1,8 @@
 package symbolTables;
 
-import symbols.Connection;
+import symbols.PhysicalInterface;
 
-public class ConnectionSymbolTable extends VariableSymbolTable<Connection> {
+import java.util.List;
+
+public class ConnectionSymbolTable extends VariableSymbolTable<List<PhysicalInterface>> {
 }

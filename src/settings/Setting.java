@@ -1,12 +1,8 @@
-package symbols;
+package settings;
 
-import com.dat405.nldl.node.*;
 import recognizers.Predicates;
 import recognizers.SettingRecognizer;
-import settings.AreaSetting;
-import settings.DeadIntervalSetting;
-import settings.HelloIntervalSetting;
-import settings.StubAreaSetting;
+import symbols.IpAddress;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,51 +31,56 @@ public abstract class Setting {
     }
 
     private static List<SettingRecognizer<? extends Setting>> OSPF_settings = new ArrayList<>();
-    private static List<SettingRecognizer<? extends Setting>> ROUTER_settings = new ArrayList<>();
+    private static List<SettingRecognizer<? extends Setting>> OTHER_settings = new ArrayList<>();
 
     static{
         OSPF_settings.addAll(Arrays.asList(
                 //OSPF Area %num%
                 new SettingRecognizer<AreaSetting>(l->{
-                    int num = Integer.valueOf(((ANumS)l.get(1)).getConst().getText());
-                    return new AreaSetting(num);
+                    return new AreaSetting((Integer) l.get(1));
                 }, Predicates.isIdentifier("Area"), Predicates.isPosNum()),
                 //OSPF Area %num% Stub
                 new SettingRecognizer<StubAreaSetting>(l->{
-                    int num = Integer.valueOf(((ANumS)l.get(1)).getConst().getText());
-                    return new StubAreaSetting(num);
+                    return new StubAreaSetting((Integer) l.get(1));
                 }, Predicates.isIdentifier("Area"), Predicates.isPosNum(), Predicates.isIdentifier("Stub")),
                 //OSPF hello-interval %num%
                 new SettingRecognizer<HelloIntervalSetting>(l->{
-            int num = Integer.valueOf(((ANumS)l.get(1)).getConst().getText());
-            return new HelloIntervalSetting(num);
+            return new HelloIntervalSetting((Integer) l.get(1));
         }, Predicates.isIdentifier("hello-interval"), Predicates.isPosNum()),
                 //OSPF dead-interval %num%
                 new SettingRecognizer<DeadIntervalSetting>(l->{
-                    int num = Integer.valueOf(((ANumS)l.get(1)).getConst().getText());
-                    return new DeadIntervalSetting(num);
+
+                    return new DeadIntervalSetting((Integer) l.get(1));
                 }, Predicates.isIdentifier("dead-interval"), Predicates.isPosNum())
         ) );
 
-        ROUTER_settings.addAll(Arrays.asList(
-
+        OTHER_settings.addAll(Arrays.asList(
+                new SettingRecognizer<DNSServerSetting>(l->{
+                    IpAddress ip = (IpAddress) l.get(2);
+                    return new DNSServerSetting(ip);
+                }, Predicates.isIdentifier("DNS"), Predicates.isIdentifier("server"), Predicates.isIp())
         ) );
     }
 
-    public static Setting getSetting(ASettingBlock settingBlock){
-        switch (settingBlock.getProtocol().getText().toUpperCase()){
-            case "OSPF": return findMatch(OSPF_settings, settingBlock);
-            case "ROUTER": return findMatch(ROUTER_settings, settingBlock);
-            default: throw new RuntimeException("Unknown Protocol.");
+    public static Setting getSetting(List<Object> objects){
+
+        if(!(objects.get(0) instanceof String)) return findMatch(OTHER_settings, objects);
+
+        switch (((String)objects.get(0)).toUpperCase()){
+            //If it starts with OSPF remove the first element and find match in ospf settings.
+            case "OSPF": return findMatch(OSPF_settings, objects.subList(1, objects.size()));
+            default:
+                return findMatch(OTHER_settings, objects);
         }
     }
 
-    private static Setting findMatch(List<SettingRecognizer<? extends Setting>> recognizers, ASettingBlock settingBlock){
+    private static Setting findMatch(List<SettingRecognizer<? extends Setting>> recognizers, List<Object> objects){
         for (SettingRecognizer<? extends Setting> recognizer : recognizers){
-            if(recognizer.isValid(settingBlock.getS())){
-                return recognizer.create(settingBlock.getS());
+            if(recognizer.isValid(objects)){
+                return recognizer.create(objects);
             }
         }
+
         throw new RuntimeException("Unknown setting");
     }
 

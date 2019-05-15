@@ -13,33 +13,17 @@ public class InterfaceIndex {
     private int index2;
 
 
-    public InterfaceIndex(PIf inf) {
-        if (inf instanceof AOneIf) {
-            AOneIf oneIf = (AOneIf) inf;
-            this.index1 = Integer.valueOf(oneIf.getFirst().getText());
-            this.index2 = -1;
-
-            setInterfaceType(oneIf.getInterfaceType().getText());
-        } else {
-            ATwoIf twoIf = (ATwoIf) inf;
-            this.index1 = Integer.valueOf(twoIf.getFirst().getText());
-            this.index2 = Integer.valueOf(twoIf.getSecond().getText());
-
-            setInterfaceType(twoIf.getInterfaceType().getText());
-        }
+    public InterfaceIndex(int first, int second, InterfaceType type) {
+        this.index1 = first;
+        this.index2 = second;
+        this.type = type;
     }
 
-    private void setInterfaceType(String ifString){
-        switch (ifString.toUpperCase()){
-            case "F":
-            case "FE": type = InterfaceType.FAST_ETHERNET; break;
-            case "G":
-            case "GB": type = InterfaceType.GIGABIT; break;
-            case "E": type = InterfaceType.ETHERNET; break;
-            default: throw new RuntimeException("Unsupported interface type");
-        }
+    public InterfaceIndex(int first, InterfaceType type) {
+        this.index1 = first;
+        this.index2 = -1;
+        this.type = type;
     }
-
 
     public int getIndex1() {
         return this.index1;

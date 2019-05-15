@@ -1,9 +1,6 @@
 package settings;
 
-import symbols.Setting;
-import symbols.SettingType;
-
-public class AreaSetting extends Setting {
+public class AreaSetting extends InterfaceSetting {
     public final int value;
 
     public AreaSetting(int value) {

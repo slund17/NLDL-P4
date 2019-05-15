@@ -2,12 +2,21 @@ package visitors;
 
 import com.dat405.nldl.analysis.DepthFirstAdapter;
 import com.dat405.nldl.node.*;
+import settings.InterfaceSetting;
+import settings.RouterSetting;
+import settings.Setting;
 import symbolTables.ConnectionSymbolTable;
 import symbolTables.GroupSymbolTable;
 import symbolTables.RouterSymbolTable;
 import symbolTables.SettingSymbolTable;
-import symbols.Router;
+import symbols.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+@SuppressWarnings({"unchecked"})
 public class SemanticsVisitor extends DepthFirstAdapter {
 
     SettingSymbolTable envS = new SettingSymbolTable();
@@ -19,31 +28,6 @@ public class SemanticsVisitor extends DepthFirstAdapter {
     ConnectionSymbolTable envC = new ConnectionSymbolTable();
 
     @Override
-    public void inStart(Start node) { //TODO semantics
-        super.inStart(node);
-    }
-
-    @Override
-    public void outStart(Start node) { //TODO semantics
-        super.outStart(node);
-    }
-
-    @Override
-    public void inAProgram(AProgram node) { //TODO semantics
-        super.inAProgram(node);
-    }
-
-    @Override
-    public void outAProgram(AProgram node) { //TODO semantics
-        super.outAProgram(node);
-    }
-
-    @Override
-    public void inARouterDeviceDcl(ARouterDeviceDcl node) { //TODO semantics
-        super.inARouterDeviceDcl(node);
-    }
-
-    @Override
     public void outARouterDeviceDcl(ARouterDeviceDcl node) {
         for (PVar pVar : node.getVar()) {
             String var = (String) getOut(pVar);
@@ -52,18 +36,9 @@ public class SemanticsVisitor extends DepthFirstAdapter {
     }
 
     @Override
-    public void inASegmentDeviceDcl(ASegmentDeviceDcl node) { //TODO semantics
-        super.inASegmentDeviceDcl(node);
-    }
-
-    @Override
-    public void outASegmentDeviceDcl(ASegmentDeviceDcl node) { //TODO semantics
+    public void outASegmentDeviceDcl(ASegmentDeviceDcl node) {
         super.outASegmentDeviceDcl(node);
-    }
-
-    @Override
-    public void inAVar(AVar node) { //TODO semantics
-        super.inAVar(node);
+        //TODO do we need to add something to the interface to tell it that it was a segment connection?
     }
 
     @Override
@@ -72,236 +47,270 @@ public class SemanticsVisitor extends DepthFirstAdapter {
     }
 
     @Override
-    public void inASettingDcl(ASettingDcl node) { //TODO semantics
+    public void inASettingDcl(ASettingDcl node) {
         super.inASettingDcl(node);
     }
 
     @Override
-    public void outASettingDcl(ASettingDcl node) { //TODO semantics
-        super.outASettingDcl(node);
+    public void outASettingDcl(ASettingDcl node) {
+        String varName = ((AVar)node.getVar()).getIdentifier().getText();
+
+        Set<Setting> setS = new HashSet<>();
+
+        for (PSettingBlock pSettingBlock : node.getSettingBlock()) {
+            Setting set = (Setting)getOut(pSettingBlock);
+            setS.add(set);
+        }
+
+        envS.enterSymbol(varName, setS);
     }
 
     @Override
-    public void inASettingBlock(ASettingBlock node) { //TODO semantics
+    public void inASettingBlock(ASettingBlock node) {
         super.inASettingBlock(node);
     }
 
     @Override
-    public void outASettingBlock(ASettingBlock node) { //TODO semantics
-        super.outASettingBlock(node);
+    public void outASettingBlock(ASettingBlock node) {
+        List<Object> objects = new ArrayList<>();
+
+        if(node.getProtocol()!=null){
+            objects.add(node.getProtocol().getText());
+        }
+
+        for (PS ps : node.getS()) {
+            objects.add(getOut(ps));
+        }
+
+        Setting setting = Setting.getSetting(objects);
+        setOut(node, setting);
     }
 
     @Override
-    public void inAIdentifierS(AIdentifierS node) { //TODO semantics
-        super.inAIdentifierS(node);
+    public void outAIdentifierS(AIdentifierS node) {
+        setOut(node, node.getIdentifier().getText());
+    }
+
+
+    @Override
+    public void outANumS(ANumS node) {
+        setOut(node, Integer.valueOf(node.getConst().getText()));
     }
 
     @Override
-    public void outAIdentifierS(AIdentifierS node) { //TODO semantics
-        super.outAIdentifierS(node);
+    public void outAStringS(AStringS node) {
+        setOut(node, node.getString().getText());
     }
 
     @Override
-    public void inANumS(ANumS node) { //TODO semantics
-        super.inANumS(node);
+    public void outAIpS(AIpS node) {
+        //Transfer the ip upwards
+        setOut(node, getOut(node.getIp()));
     }
 
     @Override
-    public void outANumS(ANumS node) { //TODO semantics
-        super.outANumS(node);
-    }
-
-    @Override
-    public void inAStringS(AStringS node) { //TODO semantics
-        super.inAStringS(node);
-    }
-
-    @Override
-    public void outAStringS(AStringS node) { //TODO semantics
-        super.outAStringS(node);
-    }
-
-    @Override
-    public void inAIpS(AIpS node) { //TODO semantics
-        super.inAIpS(node);
-    }
-
-    @Override
-    public void outAIpS(AIpS node) { //TODO semantics
-        super.outAIpS(node);
-    }
-
-    @Override
-    public void inAGroupDcl(AGroupDcl node) { //TODO semantics
+    public void inAGroupDcl(AGroupDcl node) {
         envG.openScope();
-        super.inAGroupDcl(node);
     }
 
     @Override
-    public void outAGroupDcl(AGroupDcl node) { //TODO semantics
+    public void outAGroupDcl(AGroupDcl node) {
         envG.closeScope();
-        super.outAGroupDcl(node);
     }
 
     @Override
-    public void inAVariablesGroupBlock(AVariablesGroupBlock node) { //TODO semantics
-        super.inAVariablesGroupBlock(node);
+    public void outAVariablesGroupBlock(AVariablesGroupBlock node) {
+        for (PVar var : node.getVar()) {
+            String varName = (String)getOut(var);
+            if(envC.containsSymbol(varName)){
+                for (PhysicalInterface physicalInterface : envC.retrieveSymbol(varName)) {
+                    for (Setting setting : envG.retrieveGroup().getSettings()) {
+                        if(setting instanceof InterfaceSetting){
+                            physicalInterface.enterSetting((InterfaceSetting) setting);
+                        }
+                    }
+                }
+            } else if(envS.containsSymbol(varName)){
+                for (Setting setting : envS.retrieveSymbol(varName)) {
+                    envG.retrieveGroup().addSetting(setting);
+                }
+            } else if(envR.containsSymbol(varName)){
+                Router router = envR.retrieveSymbol(varName);
+                for (Setting setting : envG.retrieveGroup().getSettings()) {
+                    if(setting instanceof RouterSetting){
+                        router.enterSetting((RouterSetting) setting);
+                    }
+                }
+            } else {
+                Token start = ((AVar)var).getIdentifier();
+                throw new RuntimeException(String.format("Unknown variable position: [%d,%d]", start.getLine(), start.getPos()));
+            }
+        }
     }
 
     @Override
-    public void outAVariablesGroupBlock(AVariablesGroupBlock node) { //TODO semantics
-        super.outAVariablesGroupBlock(node);
+    public void outASettingGroupBlock(ASettingGroupBlock node) {
+        Setting setting = (Setting) getOut(node.getSettingBlock());
+
+        envG.retrieveGroup().addSetting(setting);
     }
 
     @Override
-    public void inASettingGroupBlock(ASettingGroupBlock node) { //TODO semantics
-        super.inASettingGroupBlock(node);
-    }
-
-    @Override
-    public void outASettingGroupBlock(ASettingGroupBlock node) { //TODO semantics
-        super.outASettingGroupBlock(node);
-    }
-
-    @Override
-    public void inAGroupGroupBlock(AGroupGroupBlock node) { //TODO semantics
+    public void inAGroupGroupBlock(AGroupGroupBlock node) {
         envG.openScope();
-        super.inAGroupGroupBlock(node);
     }
 
     @Override
-    public void outAGroupGroupBlock(AGroupGroupBlock node) { //TODO semantics
+    public void outAGroupGroupBlock(AGroupGroupBlock node) {
         envG.closeScope();
-        super.outAGroupGroupBlock(node);
     }
 
     @Override
-    public void inAConnectionGroupBlock(AConnectionGroupBlock node) { //TODO semantics
-        super.inAConnectionGroupBlock(node);
+    public void outAConnectionGroupBlock(AConnectionGroupBlock node) {
+        //Do nothing
     }
 
     @Override
-    public void outAConnectionGroupBlock(AConnectionGroupBlock node) { //TODO semantics
-        super.outAConnectionGroupBlock(node);
+    public void outAIpGroupBlock(AIpGroupBlock node) {
+        envG.retrieveGroup().setIp((IpAddress) getOut(node.getIp()));
     }
 
     @Override
-    public void inAIpGroupBlock(AIpGroupBlock node) { //TODO semantics
-        super.inAIpGroupBlock(node);
+    public void outAAssGroupBlock(AAssGroupBlock node) {
+        String varName = (String) getOut(node.getVar());
+        List<PhysicalInterface> interfaces = (List<PhysicalInterface>) getOut(node.getConnectionDcl());
+        envC.enterSymbol(varName, interfaces);
     }
 
     @Override
-    public void outAIpGroupBlock(AIpGroupBlock node) { //TODO semantics
-        super.outAIpGroupBlock(node);
+    public void outARrConnectionDcl(ARrConnectionDcl node) {
+        List<PhysicalInterface> interfaces = new ArrayList<>();
+
+        interfaces.add((PhysicalInterface) getOut(node.getFirst()));
+        interfaces.add((PhysicalInterface) getOut(node.getSecond()));
+
+        setOut(node, interfaces);
     }
 
     @Override
-    public void inAAssGroupBlock(AAssGroupBlock node) { //TODO semantics
-        super.inAAssGroupBlock(node);
+    public void outARsConnectionDcl(ARsConnectionDcl node) {
+        List<PhysicalInterface> interfaces = new ArrayList<>();
+
+        interfaces.add((PhysicalInterface) getOut(node.getFirst()));
+
+        setOut(node, interfaces);
+
+        //TODO do we need to add something to the interface to tell it that it was a segment connection?
     }
 
     @Override
-    public void outAAssGroupBlock(AAssGroupBlock node) { //TODO semantics
-        super.outAAssGroupBlock(node);
+    public void outAMultiConnectionDcl(AMultiConnectionDcl node) {
+        List<PhysicalInterface> interfaces = new ArrayList<>();
+
+        for (PConnector connector : node.getConnector()) {
+            interfaces.add((PhysicalInterface) getOut(connector));
+        }
+
+        setOut(node, interfaces);
+
+        //TODO do we need to add something to the interface to tell it that it was a segment connection?
+    }
+
+
+    private InterfaceType getInterfaceType(TInterfaceType ttype){
+        switch (ttype.getText().toUpperCase()){
+            case "F":
+            case "FE": return InterfaceType.FAST_ETHERNET;
+            case "G":
+            case "GB": return InterfaceType.GIGABIT;
+            case "E": return InterfaceType.ETHERNET;
+            default: throw new RuntimeException("Unsupported interface type");
+        }
+    }
+
+
+    @Override
+    public void outATwoIf(ATwoIf node) {
+        int first = Integer.valueOf(node.getFirst().getText());
+        int second = Integer.valueOf(node.getSecond().getText());
+        InterfaceType type = getInterfaceType(node.getInterfaceType());
+
+        setOut(node, new InterfaceIndex(first, second, type));
+    }
+
+
+    @Override
+    public void outAOneIf(AOneIf node) {
+        int first = Integer.valueOf(node.getFirst().getText());
+        InterfaceType type = getInterfaceType(node.getInterfaceType());
+
+        setOut(node, new InterfaceIndex(first, type));
     }
 
     @Override
-    public void inARrConnectionDcl(ARrConnectionDcl node) { //TODO semantics
-        super.inARrConnectionDcl(node);
-    }
-
-    @Override
-    public void outARrConnectionDcl(ARrConnectionDcl node) { //TODO semantics
-        super.outARrConnectionDcl(node);
-    }
-
-    @Override
-    public void inARsConnectionDcl(ARsConnectionDcl node) { //TODO semantics
-        super.inARsConnectionDcl(node);
-    }
-
-    @Override
-    public void outARsConnectionDcl(ARsConnectionDcl node) { //TODO semantics
-        super.outARsConnectionDcl(node);
-    }
-
-    @Override
-    public void inAMultiConnectionDcl(AMultiConnectionDcl node) { //TODO semantics
-        super.inAMultiConnectionDcl(node);
-    }
-
-    @Override
-    public void outAMultiConnectionDcl(AMultiConnectionDcl node) { //TODO semantics
-        super.outAMultiConnectionDcl(node);
-    }
-
-    @Override
-    public void inATwoIf(ATwoIf node) { //TODO semantics
-        super.inATwoIf(node);
-    }
-
-    @Override
-    public void outATwoIf(ATwoIf node) { //TODO semantics
-        super.outATwoIf(node);
-    }
-
-    @Override
-    public void inAOneIf(AOneIf node) { //TODO semantics
-        super.inAOneIf(node);
-    }
-
-    @Override
-    public void outAOneIf(AOneIf node) { //TODO semantics
-        super.outAOneIf(node);
-    }
-
-    @Override
-    public void inAConnector(AConnector node) { //TODO semantics
+    public void inAConnector(AConnector node) {
         super.inAConnector(node);
     }
 
     @Override
-    public void outAConnector(AConnector node) { //TODO semantics
-        super.outAConnector(node);
+    public void outAConnector(AConnector node) {
+        String varName = (String)getOut(node.getVar());
+        IpAddress ip = (IpAddress)getOut(node.getIp());
+        int mask = Integer.valueOf(node.getConst().getText());
+        InterfaceIndex infIndex = (InterfaceIndex)getOut(node.getIf());
+
+        Router router = envR.retrieveSymbol(varName);
+        PhysicalInterface physicalInterface = router.enterInterface(infIndex);
+
+        physicalInterface.enterIP(ip);
+        physicalInterface.enterMask(mask);
+
+        for (Setting setting : envG.retrieveGroup().getSettings()) {
+            if(setting instanceof InterfaceSetting){
+                physicalInterface.enterSetting((InterfaceSetting) setting);
+            }
+        }
+
+        setOut(node, physicalInterface);
     }
 
     @Override
-    public void inAFourIp(AFourIp node) { //TODO semantics
-        super.inAFourIp(node);
+    public void outAFourIp(AFourIp node) {
+        int seg1 = Integer.valueOf(node.getSeg1().getText());
+        int seg2 = Integer.valueOf(node.getSeg2().getText());
+        int seg3 = Integer.valueOf(node.getSeg3().getText());
+        int seg4 = Integer.valueOf(node.getSeg4().getText());
+
+        setOut(node, new IpAddress(seg1, seg2, seg3, seg4));
     }
 
     @Override
-    public void outAFourIp(AFourIp node) { //TODO semantics
-        super.outAFourIp(node);
+    public void outAThreeIp(AThreeIp node) {
+        int seg1 = envG.retrieveGroup().getIp().seg1;
+        int seg2 = Integer.valueOf(node.getSeg2().getText());
+        int seg3 = Integer.valueOf(node.getSeg3().getText());
+        int seg4 = Integer.valueOf(node.getSeg4().getText());
+
+        setOut(node, new IpAddress(seg1, seg2, seg3, seg4));
     }
 
     @Override
-    public void inAThreeIp(AThreeIp node) { //TODO semantics
-        super.inAThreeIp(node);
+    public void outATwoIp(ATwoIp node) {
+        int seg1 = envG.retrieveGroup().getIp().seg1;
+        int seg2 = envG.retrieveGroup().getIp().seg2;
+        int seg3 = Integer.valueOf(node.getSeg3().getText());
+        int seg4 = Integer.valueOf(node.getSeg4().getText());
+
+        setOut(node, new IpAddress(seg1, seg2, seg3, seg4));
     }
 
     @Override
-    public void outAThreeIp(AThreeIp node) { //TODO semantics
-        super.outAThreeIp(node);
-    }
+    public void outAOneIp(AOneIp node) {
+        int seg1 = envG.retrieveGroup().getIp().seg1;
+        int seg2 = envG.retrieveGroup().getIp().seg2;
+        int seg3 = envG.retrieveGroup().getIp().seg3;
+        int seg4 = Integer.valueOf(node.getSeg4().getText());
 
-    @Override
-    public void inATwoIp(ATwoIp node) { //TODO semantics
-        super.inATwoIp(node);
-    }
-
-    @Override
-    public void outATwoIp(ATwoIp node) { //TODO semantics
-        super.outATwoIp(node);
-    }
-
-    @Override
-    public void inAOneIp(AOneIp node) { //TODO semantics
-        super.inAOneIp(node);
-    }
-
-    @Override
-    public void outAOneIp(AOneIp node) { //TODO semantics
-        super.outAOneIp(node);
+        setOut(node, new IpAddress(seg1, seg2, seg3, seg4));
     }
 }

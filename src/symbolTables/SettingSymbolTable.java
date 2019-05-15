@@ -1,6 +1,6 @@
 package symbolTables;
 
-import symbols.Setting;
+import settings.Setting;
 
 import java.util.Set;
 

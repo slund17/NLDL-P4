@@ -8,8 +8,13 @@ import java.util.Map;
 public abstract class VariableSymbolTable<T> {
     Map<String, T> table = new HashMap<>();
 
-    public void enterSymbol(String var, T symbol){
+    public T enterSymbol(String var, T symbol){
         table.put(var, symbol);
+        return symbol;
+    }
+
+    public boolean containsSymbol(String var){
+        return table.containsKey(var);
     }
 
     public T retrieveSymbol(String var){

@@ -1,7 +1,7 @@
 package symbols;
 
-import com.dat405.nldl.node.ASettingBlock;
-import com.dat405.nldl.node.PIf;
+import settings.RouterSetting;
+import settings.Setting;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,14 +10,20 @@ import java.util.Set;
 
 public class Router {
     Map<InterfaceIndex, PhysicalInterface > interfaceTable = new HashMap<>();
-    Set<Setting> settingTable = new HashSet<>();
+    Set<RouterSetting> settingTable = new HashSet<>();
 
-    void enterInterface(InterfaceIndex inf){
-        interfaceTable.put(inf, new PhysicalInterface(this));
+    public PhysicalInterface enterInterface(InterfaceIndex inf){
+        PhysicalInterface physicalInterface =  new PhysicalInterface(this);
+        interfaceTable.put(inf, physicalInterface);
+        return physicalInterface;
     }
 
-    void enterSetting(ASettingBlock setting){
-        settingTable.add(Setting.getSetting(setting));
+    public PhysicalInterface retrieveInterface(InterfaceIndex inf){
+        return interfaceTable.get(inf);
+    }
+
+    public void enterSetting(RouterSetting setting){
+        settingTable.add(setting);
     }
 
 }

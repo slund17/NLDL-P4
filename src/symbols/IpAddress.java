@@ -5,7 +5,14 @@ import com.dat405.nldl.node.*;
 public class IpAddress {
     public final int seg1, seg2, seg3, seg4;
 
-    public IpAddress(PIp ipProduction, Group group) {
+    public IpAddress(int seg1, int seg2, int seg3, int seg4) {
+        this.seg1 = seg1;
+        this.seg2 = seg2;
+        this.seg3 = seg3;
+        this.seg4 = seg4;
+    }
+
+    /*public IpAddress(PIp ipProduction, Group group) {
         if(ipProduction instanceof AFourIp){
             AFourIp ip = (AFourIp) ipProduction;
             this.seg1 = Integer.valueOf(ip.getSeg1().getText());
@@ -36,4 +43,11 @@ public class IpAddress {
 
 
     }
+
+    public IpAddress(AFourIp ip) {
+        this.seg1 = Integer.valueOf(ip.getSeg1().getText());
+        this.seg2 = Integer.valueOf(ip.getSeg2().getText());
+        this.seg3 = Integer.valueOf(ip.getSeg3().getText());
+        this.seg4 = Integer.valueOf(ip.getSeg4().getText());
+    }*/
 }

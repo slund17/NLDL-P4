@@ -5,7 +5,7 @@ Segment S3;
 
 /*This is a comment*/
 Settings DefaultOSPF{
-	dead-interval;
+	OSPF dead-interval 10;
 	OSPF hello-interval 50;
 }
 
@@ -16,7 +16,6 @@ Settings DefaultOSPF2{
 
 Group theWholeNetwork{
     DefaultOSPF;
-    Setting DNS server 8.8.8.8;
 
     R1;
     R2;
@@ -26,14 +25,13 @@ Group theWholeNetwork{
         IP 10.0.0.0;
 
         DefaultOSPF2;
-        Setting OSPF hello- 8.8.4.4 555 interval 9000;
+        Setting OSPF hello-interval 9000;
 
         Setting DNS server 8.8.4.4;
         Setting OSPF area 0;
 
         R3;
         R19;
-        R20;
 
         R1(10.10.0.1/24, f 0/17)->S3;
         R20(10.20.0.1/24, f 0/17)->S2;
