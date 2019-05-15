@@ -13,7 +13,7 @@ public class Router {
     Set<Setting> settingTable = new HashSet<>();
 
     void enterInterface(PIf inf){
-        interfaceTable.put(new InterfaceIndex(inf), new PhysicalInterface());
+        interfaceTable.put(new InterfaceIndex(inf), new PhysicalInterface(this));
     }
 
     void enterSetting(ASettingBlock setting){

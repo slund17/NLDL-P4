@@ -2,5 +2,7 @@ package symbolTables;
 
 import symbols.Setting;
 
-public class SettingSymbolTable extends VariableSymbolTable<Setting> {
+import java.util.Set;
+
+public class SettingSymbolTable extends VariableSymbolTable<Set<? extends Setting>> {
 }
