@@ -11,12 +11,31 @@ import settings.StubAreaSetting;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.Objects;
 
-public class Setting {
+public abstract class Setting {
 
-    public static List<SettingRecognizer<? extends Setting>> OSPF_settings = new ArrayList<>();
-    public static List<SettingRecognizer<? extends Setting>> ROUTER_settings;
+    private final SettingType settingType;
+
+    protected Setting(SettingType settingType) {
+        this.settingType = settingType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Setting)) return false;
+        Setting setting = (Setting) o;
+        return settingType == setting.settingType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(settingType);
+    }
+
+    private static List<SettingRecognizer<? extends Setting>> OSPF_settings = new ArrayList<>();
+    private static List<SettingRecognizer<? extends Setting>> ROUTER_settings = new ArrayList<>();
 
     static{
         OSPF_settings.addAll(Arrays.asList(
@@ -63,6 +82,8 @@ public class Setting {
         }
         throw new RuntimeException("Unknown setting");
     }
+
+
 
     //[OSPF, Area, num, Stub]
     //(x->x.text()=="OSPF", x->x.text()=="Area", x->x instanceof TConst, x->x.text()=="Stub)
