@@ -3,9 +3,12 @@ package symbolTables;
 import com.dat405.nldl.node.AVar;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 
-public abstract class VariableSymbolTable<T> {
+public abstract class VariableSymbolTable<T>{
     Map<String, T> table = new HashMap<>();
 
     public T enterSymbol(String var, T symbol){
@@ -20,5 +23,4 @@ public abstract class VariableSymbolTable<T> {
     public T retrieveSymbol(String var){
         return  table.get(var);
     }
-
 }

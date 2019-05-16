@@ -52,6 +52,10 @@ public abstract class Setting {
                 new SettingRecognizer<NetworkTypeSetting>(l->{
                     return new NetworkTypeSetting((String) l.get(1));
                 }, Predicates.isIdentifier("Network"), Predicates.isIdentifierAnyOf("point-to-point", "broadcast", "non-broadcast", "point-to-multipoint")),
+                //OSPF Network point-to-multipoint no-broadcast
+                new SettingRecognizer<NetworkTypeSetting>(l->{
+                    return new NetworkTypeSetting((String) l.get(1), (String)l.get(2));
+                }, Predicates.isIdentifier("Network"), Predicates.isIdentifier("point-to-multipoint"), Predicates.isIdentifier("non-broadcast")),
                 //OSPF hello-interval %num%
                 new SettingRecognizer<HelloIntervalSetting>(l->{
             return new HelloIntervalSetting((Integer) l.get(1));

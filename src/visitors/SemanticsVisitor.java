@@ -23,7 +23,7 @@ public class SemanticsVisitor extends DepthFirstAdapter {
 
     GroupSymbolTable envG = new GroupSymbolTable();
 
-    RouterSymbolTable envR = new RouterSymbolTable();
+    public RouterSymbolTable envR = new RouterSymbolTable();
 
     ConnectionSymbolTable envC = new ConnectionSymbolTable();
 
@@ -31,7 +31,7 @@ public class SemanticsVisitor extends DepthFirstAdapter {
     public void outARouterDeviceDcl(ARouterDeviceDcl node) {
         for (PVar pVar : node.getVar()) {
             String var = (String) getOut(pVar);
-            envR.enterSymbol(var, new Router());
+            envR.enterSymbol(var, new Router(var));
         }
     }
 
