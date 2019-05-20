@@ -51,9 +51,8 @@ public class NetworkTypeSetting extends InterfaceSetting {
             case POINT_TO_POINT:
             case POINT_TO_MULTIPOINT:
             case BROADCAST:
-
+            default:
                 interfaceEmitters.add(new InterfaceConfigurationEmitter(physicalInterface, String.format("Ip OSPF Network %s", type.toString())));
-                break;
         }
     }
 }
