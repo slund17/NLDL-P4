@@ -48,11 +48,18 @@ public abstract class Setting {
                 new SettingRecognizer<TotallyStubAreaSetting>(l->{
                     return new TotallyStubAreaSetting((Integer) l.get(1));
                 }, Predicates.isIdentifier("Area"), Predicates.isPosNum(), Predicates.isIdentifier("totally-stub")),
+                //OSPF Area %num% nssa
+                new SettingRecognizer<NssaAreaSetting>(l ->{
+                    return new NssaAreaSetting((Integer)  l.get(1));
+                }, Predicates.isIdentifier("Area"), Predicates.isPosNum(), Predicates.isIdentifier("nssa")),
+                new SettingRecognizer<TotallyNssaAreaSetting>(l -> {
+                    return new TotallyNssaAreaSetting((Integer) l.get(1));
+                }, Predicates.isIdentifier("Area"), Predicates.isPosNum(), Predicates.isIdentifier("totally-nssa")),
                 //OSPF Network %type%
                 new SettingRecognizer<NetworkTypeSetting>(l->{
                     return new NetworkTypeSetting((String) l.get(1));
                 }, Predicates.isIdentifier("Network"), Predicates.isIdentifierAnyOf("point-to-point", "broadcast", "non-broadcast", "point-to-multipoint")),
-                //OSPF Network point-to-multipoint no-broadcast
+                //OSPF Network point-to-multipoint non-broadcast
                 new SettingRecognizer<NetworkTypeSetting>(l->{
                     return new NetworkTypeSetting((String) l.get(1), (String)l.get(2));
                 }, Predicates.isIdentifier("Network"), Predicates.isIdentifier("point-to-multipoint"), Predicates.isIdentifier("non-broadcast")),
