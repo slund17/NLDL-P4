@@ -50,7 +50,14 @@ public class CodeGenerator {
                 ));
             }
 
-            File file = new File(String.format("%s.txt", router.getName()));
+            //Creating the configs directory for the configuration files
+            File configsDir = new File("configs");
+            if (!configsDir.exists()){
+                configsDir.mkdir();
+            }
+
+
+            File file = new File(String.format("configs/%s.txt", router.getName()));
             FileWriter fr = null;
             BufferedWriter br = null;
             try{
