@@ -1,15 +1,13 @@
 package visitors;
 
+import ast.ASTFactory;
 import com.dat405.nldl.node.Start;
 import org.junit.jupiter.api.Test;
+import settings.HelloIntervalSetting;
 import settings.InterfaceSetting;
-import settings.NssaAreaSetting;
-import settings.TotallyStubAreaSetting;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -57,20 +55,43 @@ public class PrgGDcl {
                     "Router R1, R2;" +
                     "Group common { " +
                         "IP 10.3.2.0;" +
-                        "Setting OSPF Area 3 totally-stub;" +
-                        "Setting OSPF Network point-to-point;" +
+                        "Setting OSPF hello-interval 200;" +
                         "Connection y = R1(.1/28, f0/1)->R2(.18/30, f2/1);" +
                         "}" +
-                        "Group special {" +
-                            "Setting OSPF Area 1 totally-stub;" +
+                    "Group special {" +
+                        "Setting OSPF hello-interval 100;" +
+                        "y;" +
+                     "}";
+
+    String program4 =
+                    "Router R1, R2;" +
+                    "Group common { " +
+                        "IP 10.3.2.0;" +
+                        "Connection y = R1(.1/28, f0/1)->R2(.18/30, f2/1);" +
+                    "}" +
+                    "Group special {" +
+                            "Setting OSPF hello-interval 200;" +
                             "y;" +
-                         "}";
+                    "}";
+
+    String program5 =
+            "Router R1, R2;" +
+                    "Group common { " +
+                        "IP 10.3.2.0;" +
+                        "Setting OSPF hello-interval 200;" +
+                        "Connection y = R1(.1/28, f0/1)->R2(.18/30, f2/1);" +
+
+                        "Group special {" +
+                            "Setting OSPF hello-interval 100;" +
+                            "y;" +
+                        "}"+
+                    "}";
 
 
     @Test
     void PrgGDcl_1() {
         // Assert envS was NOT modified
-        Start start = ASTFactory.startFromString(program1);
+        Start start = ASTFactory.fromString(program1);
         start.apply(semanticsVisitor);
         assertEquals(0, semanticsVisitor.envS.size());
     }
@@ -78,7 +99,7 @@ public class PrgGDcl {
     @Test
     void PrgGDcl_2() {
         // Assert that envI WAS modified for R19
-        Start start = ASTFactory.startFromString(program1);
+        Start start = ASTFactory.fromString(program1);
         start.apply(semanticsVisitor);
         assertEquals(3, semanticsVisitor.envR.retrieveSymbol("R19").getInterfaces().size());
     }
@@ -86,7 +107,7 @@ public class PrgGDcl {
     @Test
     void PrgGDcl_3() {
         // Assert that envC WAS modified
-        Start start = ASTFactory.startFromString(program1);
+        Start start = ASTFactory.fromString(program1);
         start.apply(semanticsVisitor);
         assertEquals(1, semanticsVisitor.envC.size());
         assertTrue(semanticsVisitor.envC.containsSymbol("b1"));
@@ -95,7 +116,7 @@ public class PrgGDcl {
     @Test
     void PrgGDcl_4() {
         // Assert that envC WAS modified
-        Start start = ASTFactory.startFromString(program1);
+        Start start = ASTFactory.fromString(program1);
         start.apply(semanticsVisitor);
         assertEquals(1, semanticsVisitor.envC.size());
         assertTrue(semanticsVisitor.envC.containsSymbol("b1"));
@@ -104,19 +125,40 @@ public class PrgGDcl {
     @Test
     void PrgGDcl_5() {
         // Assert that IP shorthand cannot be used without a group declaration of a long IP
-        Start start = ASTFactory.startFromString(program2);
+        Start start = ASTFactory.fromString(program2);
         assertThrows(RuntimeException.class, () -> start.apply(semanticsVisitor));
     }
 
+    @SuppressWarnings("Duplicates")
     @Test
     void PrgGDcl_6() {
-        // Assert that first Area setting overrides 2nd  //TODO virker det rigtigt?
-        Start start = ASTFactory.startFromString(program3);
+        // Assert that the second Area setting overrides the first
+        Start start = ASTFactory.fromString(program3);
         start.apply(semanticsVisitor);
         List<InterfaceSetting> sets = new ArrayList<>();
         semanticsVisitor.envR.retrieveSymbol("R1").getInterfaces().forEach(ix -> sets.addAll(ix.getSettings()));
-        assertEquals(3, ((TotallyStubAreaSetting)sets.get(0)).areaNumber);
+        assertEquals(100, ((HelloIntervalSetting)sets.get(0)).interval);
     }
 
+    @SuppressWarnings("Duplicates")
+    @Test
+    void PrgGDcl_7() {
+        // Assert that the group settings in the second group are applied on the connection variable
+        Start start = ASTFactory.fromString(program4);
+        start.apply(semanticsVisitor);
+        List<InterfaceSetting> sets = new ArrayList<>();
+        semanticsVisitor.envR.retrieveSymbol("R1").getInterfaces().forEach(ix -> sets.addAll(ix.getSettings()));
+        assertEquals(200, ((HelloIntervalSetting)sets.get(0)).interval);
+    }
 
+    @SuppressWarnings("Duplicates")
+    @Test
+    void PrgGDcl_8() {
+        // Assert that the group settings in the innermost group scope are applied on the connection variable first
+        Start start = ASTFactory.fromString(program5);
+        start.apply(semanticsVisitor);
+        List<InterfaceSetting> sets = new ArrayList<>();
+        semanticsVisitor.envR.retrieveSymbol("R1").getInterfaces().forEach(ix -> sets.addAll(ix.getSettings()));
+        assertEquals(100, ((HelloIntervalSetting)sets.get(0)).interval);
+    }
 }

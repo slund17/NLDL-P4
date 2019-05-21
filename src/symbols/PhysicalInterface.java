@@ -64,7 +64,10 @@ public class PhysicalInterface {
     }
 
     public void enterSetting(InterfaceSetting setting){
-        settingTable.add(setting);
+        if(!settingTable.add(setting)) {
+            settingTable.remove(setting);
+            settingTable.add(setting);
+        }
     }
 
     public void enterIP(IpAddress ip){

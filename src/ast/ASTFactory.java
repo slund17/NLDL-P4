@@ -1,4 +1,4 @@
-package visitors;
+package ast;
 
 import codegeneration.CodeGenerator;
 import com.dat405.nldl.lexer.Lexer;
@@ -12,7 +12,7 @@ import java.io.*;
 
 public class ASTFactory {
 
-    public static Start startFromString(String code) {
+    public static Start fromString(String code) {
         StringReader stringReader = new StringReader(code);
         PushbackReader pushbackReader = new PushbackReader(stringReader);
         Lexer lexer = new Lexer(pushbackReader);

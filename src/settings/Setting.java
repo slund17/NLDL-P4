@@ -105,7 +105,7 @@ public abstract class Setting {
             }
         }
 
-        throw new RuntimeException("Unknown setting");
+        throw new RuntimeException("Unknown setting: " + objects);
     }
 
 

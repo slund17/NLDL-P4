@@ -1,6 +1,7 @@
 package visitors;
 
 
+import ast.ASTFactory;
 import org.junit.jupiter.api.Test;
 import symbols.IpAddress;
 
@@ -40,7 +41,7 @@ public class GBlk_IP {
     @Test
     void IP() {
         // Assert that all the shorthand IP evaluates correctly
-        ASTFactory.startFromString(GBlk).apply(semanticsVisitor);
+        ASTFactory.fromString(GBlk).apply(semanticsVisitor);
         List<IpAddress> ipAdds = new ArrayList<>();
         semanticsVisitor.envR.getRouters().forEach(r -> r.getInterfaces().forEach(ix -> ipAdds.add(ix.getNetworkAddress())));
         IpAddress validationIp = new IpAddress(10,3,2,0);
@@ -52,7 +53,7 @@ public class GBlk_IP {
     @Test
     void IP_2() {
         // Assert that the IP address on the routers
-        ASTFactory.startFromString(GBlk_2).apply(semanticsVisitor);
+        ASTFactory.fromString(GBlk_2).apply(semanticsVisitor);
         List<IpAddress> ipAdds = new ArrayList<>();
         semanticsVisitor.envR.getRouters().forEach(r -> r.getInterfaces().forEach(ix -> ipAdds.add(ix.getNetworkAddress())));
         IpAddress validationIp = new IpAddress(11,3,2,0);

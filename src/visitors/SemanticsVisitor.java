@@ -143,7 +143,7 @@ public class SemanticsVisitor extends DepthFirstAdapter {
                 }
             } else {
                 Token start = ((AVar)var).getIdentifier();
-                throw new RuntimeException(String.format("Unknown variable position: [%d,%d]", start.getLine(), start.getPos()));
+                throw new RuntimeException(String.format("Unknown variable '%s' position: [%d,%d]", varName, start.getLine(), start.getPos()));
             }
         }
     }

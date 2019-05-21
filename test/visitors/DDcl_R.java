@@ -1,5 +1,6 @@
 package visitors;
 
+import ast.ASTFactory;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,21 +14,21 @@ public class DDcl_R {
     @Test
     void DDcl_R1() {
         // Assert only 1 router was declared
-        ASTFactory.startFromString(DDcl_R1).apply(semanticsVisitor);
+        ASTFactory.fromString(DDcl_R1).apply(semanticsVisitor);
         assertEquals(semanticsVisitor.envR.size(), 1);
     }
 
     @Test
     void DDcl_R2() {
         // Assert 3 routers were declared
-        ASTFactory.startFromString(DDcl_R2).apply(semanticsVisitor);
+        ASTFactory.fromString(DDcl_R2).apply(semanticsVisitor);
         assertEquals(semanticsVisitor.envR.size(), 3);
     }
 
     @Test
     void DDcl_R3() {
         // Assert a specific router was added
-        ASTFactory.startFromString(DDcl_R2).apply(semanticsVisitor);
+        ASTFactory.fromString(DDcl_R2).apply(semanticsVisitor);
         assertTrue(semanticsVisitor.envR.containsSymbol("M13"));
     }
 }
