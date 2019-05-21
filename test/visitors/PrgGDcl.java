@@ -7,7 +7,6 @@ import settings.HelloIntervalSetting;
 import settings.InterfaceSetting;
 import symbols.InterfaceIndex;
 import symbols.InterfaceType;
-import symbols.IpAddress;
 import symbols.PhysicalInterface;
 
 import java.util.ArrayList;
