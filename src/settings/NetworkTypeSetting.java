@@ -12,7 +12,6 @@ import java.util.Set;
 
 public class NetworkTypeSetting extends InterfaceSetting {
 
-
     private final NetworkType type;
 
     public NetworkTypeSetting(String type) {
