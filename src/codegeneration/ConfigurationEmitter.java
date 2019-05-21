@@ -17,7 +17,7 @@ public abstract class ConfigurationEmitter {
     }
 
     public ConfigurationEmitter(String... strings) {
-        this.strings = Arrays.asList(strings);
+        this.strings = new ArrayList<>(Arrays.asList(strings));
     }
 
     public void addCommand(String command){
