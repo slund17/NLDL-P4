@@ -59,7 +59,6 @@ public class PhysicalInterface {
         this.router = router;
     }
 
-
     public Set<InterfaceSetting> getSettings(){
         return settingTable;
     }

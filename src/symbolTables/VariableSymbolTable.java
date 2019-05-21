@@ -16,6 +16,8 @@ public abstract class VariableSymbolTable<T>{
         return symbol;
     }
 
+    public int size() { return table.size(); }
+
     public boolean containsSymbol(String var){
         return table.containsKey(var);
     }

@@ -11,7 +11,6 @@ Settings test1{
 	OSPF dead-interval 2;
 }
 
-
 Group area3{
 	IP 10.3.2.0;
 
@@ -35,7 +34,6 @@ Group area3{
 Group area0{
 	IP 10.0.0.0;
 	Setting OSPF Area 0;
-
 
 	Connection b4 = Connection{
 		R13(.1/24, f0/0);
