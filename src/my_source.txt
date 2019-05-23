@@ -71,6 +71,7 @@ Group area4{
 Group area2{
 	IP 10.2.30.0;
 	Setting OSPF Area 2;
+    Setting OSPF Network broadcast;
 
 	Connection b2 = Connection{
 		R5(.4/29, f0/0);

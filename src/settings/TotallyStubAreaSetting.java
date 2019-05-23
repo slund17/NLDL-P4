@@ -34,9 +34,13 @@ public class TotallyStubAreaSetting extends AreaSetting{
 
 
         if(!isAreaBorderRouter){
-            routerEmitters.add(new RouterConfigurationEmitter(String.format("Area %d stub", areaNumber)));
+            routerEmitters.add(new RouterConfigurationEmitter(
+                    "Router OSPF 1",
+                    String.format("Area %d stub", areaNumber)));
         } else {
-            routerEmitters.add(new RouterConfigurationEmitter(String.format("Area %d stub no-summary", areaNumber)));
+            routerEmitters.add(new RouterConfigurationEmitter(
+                    "Router OSPF 1",
+                    String.format("Area %d stub no-summary", areaNumber)));
         }
     }
 }
