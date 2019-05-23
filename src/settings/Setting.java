@@ -76,7 +76,11 @@ public abstract class Setting {
                 //OSPF priority %num%
                 new SettingRecognizer<PrioritySetting>(l -> {
                     return new PrioritySetting((Integer) l.get(1));
-                }, Predicates.isIdentifier("priority"), Predicates.isPosNum())
+                }, Predicates.isIdentifier("priority"), Predicates.isPosNum()),
+
+                new SettingRecognizer<DefaultMetricSetting>(l -> {
+                    return new DefaultMetricSetting((Integer) l.get(1));
+                }, Predicates.isIdentifier("Default-Metric"), Predicates.isPosNum())
         ));
 
         OTHER_settings.addAll(Arrays.asList(

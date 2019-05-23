@@ -7,8 +7,16 @@ Settings test2{
 }
 
 Settings test1{
+
 	OSPF hello-interval 10;
 	OSPF dead-interval 2;
+}
+
+Group testMetric{
+    Setting OSPF Default-metric 100;
+
+    R1;
+    R2;
 }
 
 Group area3{

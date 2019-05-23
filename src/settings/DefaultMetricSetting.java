@@ -1,6 +1,5 @@
 package settings;
 
-import codegeneration.ConfigurationEmitter;
 import codegeneration.InterfaceConfigurationEmitter;
 import codegeneration.RouterConfigurationEmitter;
 import symbols.IpAddress;
@@ -11,17 +10,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class RouterIDSetting extends RouterSetting{
-    private final IpAddress ip;
+public class DefaultMetricSetting extends RouterSetting{
+    public final int cost;
 
-    public RouterIDSetting(IpAddress ip) {
-        super(SettingType.ROUTER_ID);
-        this.ip = ip;
+    public DefaultMetricSetting(Integer integer) {
+        super(SettingType.OSPF_DEFAULT_METRIC);
+        this.cost = integer;
     }
 
     @Override
     public void addEmitters(Router router, Set<RouterConfigurationEmitter> routerEmitters, Set<InterfaceConfigurationEmitter> interfaceEmitters, Map<IpAddress, List<PhysicalInterface>> interfaceNetworkMap) {
-        RouterConfigurationEmitter emitter = new RouterConfigurationEmitter("Router OSPF 1 ", String.format("Router-ID %d.%d.%d.%d", ip.seg1, ip.seg2, ip.seg3, ip.seg4));
+        RouterConfigurationEmitter emitter = new RouterConfigurationEmitter(
+                "Router OSPF 1",
+                String.format("Default-metric %d", cost)
+        );
+
         routerEmitters.add(emitter);
     }
 }
