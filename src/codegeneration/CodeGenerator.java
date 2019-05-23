@@ -50,6 +50,8 @@ public class CodeGenerator {
                 ));
             }
 
+            //TODO Vi skal afslutte alle konfigurationsfiler med 'write' kommandoen der gemmer konfigurationen på routeren.
+
             //Creating the configs directory for the configuration files
             File configsDir = new File("configs");
             if (!configsDir.exists()){
