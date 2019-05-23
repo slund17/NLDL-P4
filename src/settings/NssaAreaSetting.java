@@ -19,6 +19,7 @@ public class NssaAreaSetting extends  AreaSetting {
     @Override
     public void addEmitters(PhysicalInterface physicalInterface, Set<RouterConfigurationEmitter> routerEmitters, Set<InterfaceConfigurationEmitter> interfaceEmitters, Map<IpAddress, List<PhysicalInterface>> interfaceNetworkMap) {
         super.addEmitters(physicalInterface, routerEmitters, interfaceEmitters, interfaceNetworkMap);
+        routerEmitters.add(new RouterConfigurationEmitter("Router OSPF 1"));
         routerEmitters.add(new RouterConfigurationEmitter(String.format("Area %d nssa", this.areaNumber)));
     }
 }

@@ -18,8 +18,8 @@ public class TotallyNssaAreaSetting extends AreaSetting{
     @Override
     public void addEmitters(PhysicalInterface physicalInterface, Set<RouterConfigurationEmitter> routerEmitters, Set<InterfaceConfigurationEmitter> interfaceEmitters, Map<IpAddress, List<PhysicalInterface>> interfaceNetworkMap) {
         super.addEmitters(physicalInterface, routerEmitters, interfaceEmitters, interfaceNetworkMap);
-
         boolean isAreaBorderRouter = false;
+        routerEmitters.add(new RouterConfigurationEmitter("Router OSPF 1"));
 
         for (PhysicalInterface anInterface : physicalInterface.getRouter().getInterfaces()) {
             for (InterfaceSetting setting : anInterface.getSettings()) {

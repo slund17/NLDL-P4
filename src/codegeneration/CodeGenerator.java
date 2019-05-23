@@ -74,6 +74,8 @@ public class CodeGenerator {
                     emitter.writeCommand(br);
                 }
 
+                br.write("Write"+System.getProperty("line.separator"));
+
             } catch (IOException e) {
                 e.printStackTrace();
             }finally{
