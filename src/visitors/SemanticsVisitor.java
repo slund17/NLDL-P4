@@ -38,7 +38,6 @@ public class SemanticsVisitor extends DepthFirstAdapter {
     @Override
     public void outASegmentDeviceDcl(ASegmentDeviceDcl node) {
         super.outASegmentDeviceDcl(node);
-        //TODO do we need to add something to the interface to tell it that it was a segment connection?
     }
 
     @Override
@@ -200,7 +199,6 @@ public class SemanticsVisitor extends DepthFirstAdapter {
 
         setOut(node, interfaces);
 
-        //TODO do we need to add something to the interface to tell it that it was a segment connection?
     }
 
     @Override
@@ -213,7 +211,6 @@ public class SemanticsVisitor extends DepthFirstAdapter {
 
         setOut(node, interfaces);
 
-        //TODO do we need to add something to the interface to tell it that it was a segment connection?
     }
 
 
