@@ -7,5 +7,6 @@ public enum SettingType {
     OSPF_NETWORK_TYPE,
     DNS_SERVER,
     ROUTER_ID,
+    OSPF_PRIORITY
 
 }

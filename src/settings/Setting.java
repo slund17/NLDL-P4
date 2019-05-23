@@ -2,8 +2,10 @@ package settings;
 
 import recognizers.Predicates;
 import recognizers.SettingRecognizer;
+import symbols.InterfaceIndex;
 import symbols.IpAddress;
 
+import javax.sql.rowset.Predicate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,65 +36,69 @@ public abstract class Setting {
     private static List<SettingRecognizer<? extends Setting>> OSPF_settings = new ArrayList<>();
     private static List<SettingRecognizer<? extends Setting>> OTHER_settings = new ArrayList<>();
 
-    static{
+    static {
         OSPF_settings.addAll(Arrays.asList(
                 //OSPF Area %num%
-                new SettingRecognizer<AreaSetting>(l->{
+                new SettingRecognizer<AreaSetting>(l -> {
                     return new AreaSetting((Integer) l.get(1));
                 }, Predicates.isIdentifier("Area"), Predicates.isPosNum()),
                 //OSPF Area %num% Stub
-                new SettingRecognizer<StubAreaSetting>(l->{
+                new SettingRecognizer<StubAreaSetting>(l -> {
                     return new StubAreaSetting((Integer) l.get(1));
                 }, Predicates.isIdentifier("Area"), Predicates.isPosNum(), Predicates.isIdentifier("Stub")),
                 //OSPF Area %num% totally-stub
-                new SettingRecognizer<TotallyStubAreaSetting>(l->{
+                new SettingRecognizer<TotallyStubAreaSetting>(l -> {
                     return new TotallyStubAreaSetting((Integer) l.get(1));
                 }, Predicates.isIdentifier("Area"), Predicates.isPosNum(), Predicates.isIdentifier("totally-stub")),
                 //OSPF Area %num% nssa
-                new SettingRecognizer<NssaAreaSetting>(l ->{
-                    return new NssaAreaSetting((Integer)  l.get(1));
+                new SettingRecognizer<NssaAreaSetting>(l -> {
+                    return new NssaAreaSetting((Integer) l.get(1));
                 }, Predicates.isIdentifier("Area"), Predicates.isPosNum(), Predicates.isIdentifier("nssa")),
                 new SettingRecognizer<TotallyNssaAreaSetting>(l -> {
                     return new TotallyNssaAreaSetting((Integer) l.get(1));
                 }, Predicates.isIdentifier("Area"), Predicates.isPosNum(), Predicates.isIdentifier("totally-nssa")),
                 //OSPF Network %type%
-                new SettingRecognizer<NetworkTypeSetting>(l->{
+                new SettingRecognizer<NetworkTypeSetting>(l -> {
                     return new NetworkTypeSetting((String) l.get(1));
                 }, Predicates.isIdentifier("Network"), Predicates.isIdentifierAnyOf("point-to-point", "broadcast", "non-broadcast", "point-to-multipoint")),
                 //OSPF Network point-to-multipoint non-broadcast
-                new SettingRecognizer<NetworkTypeSetting>(l->{
-                    return new NetworkTypeSetting((String) l.get(1), (String)l.get(2));
+                new SettingRecognizer<NetworkTypeSetting>(l -> {
+                    return new NetworkTypeSetting((String) l.get(1), (String) l.get(2));
                 }, Predicates.isIdentifier("Network"), Predicates.isIdentifier("point-to-multipoint"), Predicates.isIdentifier("non-broadcast")),
                 //OSPF hello-interval %num%
-                new SettingRecognizer<HelloIntervalSetting>(l->{
-            return new HelloIntervalSetting((Integer) l.get(1));
-        }, Predicates.isIdentifier("hello-interval"), Predicates.isPosNum()),
+                new SettingRecognizer<HelloIntervalSetting>(l -> {
+                    return new HelloIntervalSetting((Integer) l.get(1));
+                }, Predicates.isIdentifier("hello-interval"), Predicates.isPosNum()),
                 //OSPF dead-interval %num%
-                new SettingRecognizer<DeadIntervalSetting>(l->{
-
+                new SettingRecognizer<DeadIntervalSetting>(l -> {
                     return new DeadIntervalSetting((Integer) l.get(1));
-                }, Predicates.isIdentifier("dead-interval"), Predicates.isPosNum())
-        ) );
+                }, Predicates.isIdentifier("dead-interval"), Predicates.isPosNum()),
+                //OSPF priority %num%
+                new SettingRecognizer<PrioritySetting>(l -> {
+                    return new PrioritySetting((Integer) l.get(1));
+                }, Predicates.isIdentifier("priority"), Predicates.isPosNum())
+        ));
 
         OTHER_settings.addAll(Arrays.asList(
-                new SettingRecognizer<DNSServerSetting>(l->{
+                new SettingRecognizer<DNSServerSetting>(l -> {
                     IpAddress ip = (IpAddress) l.get(2);
                     return new DNSServerSetting(ip);
                 }, Predicates.isIdentifier("DNS"), Predicates.isIdentifier("server"), Predicates.isIp()),
-                new SettingRecognizer<RouterIDSetting>(l->{
+                new SettingRecognizer<RouterIDSetting>(l -> {
                     IpAddress ip = (IpAddress) l.get(2);
                     return new RouterIDSetting(ip);
                 }, Predicates.isIdentifier("Router"), Predicates.isIdentifier("ID"), Predicates.isIp())
-        ) );
+        ));
     }
 
-    public static Setting getSetting(List<Object> objects){
+    public static Setting getSetting(List<Object> objects) {
 
-        if(!(objects.get(0) instanceof String)) return findMatch(OTHER_settings, objects);
+        if (!(objects.get(0) instanceof String)) return findMatch(OTHER_settings, objects);
 
-        switch (((String)objects.get(0)).toUpperCase()){
+        switch (((String) objects.get(0)).toUpperCase()) {
             //If it starts with OSPF remove the first element and find match in ospf settings.
-            case "OSPF": return findMatch(OSPF_settings, objects.subList(1, objects.size()));
+            case "OSPF":
+                return findMatch(OSPF_settings, objects.subList(1, objects.size()));
             default:
                 return findMatch(OTHER_settings, objects);
         }
