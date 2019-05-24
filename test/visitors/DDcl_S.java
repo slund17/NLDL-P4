@@ -14,7 +14,6 @@ public class DDcl_S {
     String program_2 = "Segment r1, S2, Ko, LO; Settings mySet{ } Group grp1 { mySet; }";
     String program_3 = "Segment r1, S2, Ko, LO; Settings mySet{ } Group grp1 { mySet; r1; }";
 
-
     // Assert that declaring a segment variable does not add element to envR
     @Test
     void DDcl_S1() {

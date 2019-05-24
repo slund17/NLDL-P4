@@ -5,11 +5,9 @@ package com.dat405.nldl.parser;
 import com.dat405.nldl.lexer.*;
 import com.dat405.nldl.node.*;
 import com.dat405.nldl.analysis.*;
-import java.util.*;
 
-import java.io.DataInputStream;
-import java.io.BufferedInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.util.*;
 
 @SuppressWarnings("nls")
 public class Parser
@@ -35,6 +33,33 @@ public class Parser
     {
         this.lexer = lexer;
     }
+
+
+    public static Parser fromString(String code) {
+        StringReader stringReader = new StringReader(code);
+        PushbackReader pushbackReader = new PushbackReader(stringReader);
+        return Parser.create(pushbackReader);
+    }
+
+
+    public static Parser create(PushbackReader pushbackReader) {
+        Lexer lexer = new Lexer(pushbackReader);
+        return new Parser(lexer);
+    }
+
+
+    public static Parser fromFile(String path) {
+        File source = new File(path);
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(source));
+            PushbackReader pushbackReader = new PushbackReader(bufferedReader, 2048);
+            return create(pushbackReader);
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
     @SuppressWarnings({"unchecked","unused"})
     private void push(int numstate, ArrayList<Object> listNode) throws ParserException, LexerException, IOException
