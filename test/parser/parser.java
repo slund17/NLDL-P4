@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class parser {
 
-
     String program0 = "Router r1; Group grp1 { r1; }";
 
     // Syntactically valid program
@@ -210,8 +209,7 @@ public class parser {
 
 
     String program17
-            =
-            "Router R18, R19;" +
+            = "Router R18, R19;" +
                 "Group area3{" +
                 "IP 10.3.2.0;" +
                 "R1(.1/30, f0/0)-R19(.2/30, f1/0);" +
@@ -253,6 +251,7 @@ public class parser {
                 "}" +
             "" +
                 "Group ptp{" +
+                    "r1;" +
                     "Setting OSPF Network point-to-point;" +
                     "R2(.0.2/30, f0/1)->R23(.0.1/30, f0/0);" +
                 "}" +
@@ -473,6 +472,51 @@ public class parser {
         ARouterDeviceDcl pDeviceDcl = (ARouterDeviceDcl)aProgram.getDeviceDcl().get(1);
         AVar var = (AVar)pDeviceDcl.getVar().get(1);
         assertEquals("R2", var.getIdentifier().getText());
+    }
+
+    String program28 =
+        "Router r1;" +
+        "Group area2{" +
+            "R2;" +
+            "Group ptp{" +
+                "R2;" +
+                "Group ptp{" +
+                    "R2;" +
+                    "Group ptp{" +
+                    "R2;" +
+                        "Group ptp{" +
+                        "R2;" +
+                            "Group ptp{" +
+                                "R2;" +
+                                "Group ptp{" +
+                                    "R2;" +
+                                "}" +
+                            "}" +
+                        "}" +
+                    "}" +
+                "}" +
+            "}" +
+        "}";
+
+    @Test
+    void parseTest31() throws Exception {
+        Parser.fromString(program28).parse();
+    }
+
+    // Program with thousands of nested groups
+    @Test
+    void parseTest32() throws Exception {
+        String start = "Router R1;";
+        String base = "Group g1 { r1; ";
+        String tail = start + base;
+        int i = 0;
+        for(; i < 10000; i++) {
+            tail += base;
+        }
+        for(int j = 0; j < i+1; j++) {
+            tail += "}";
+        }
+        Parser.fromString(tail).parse();
     }
 }
 
