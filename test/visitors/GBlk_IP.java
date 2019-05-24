@@ -40,7 +40,7 @@ public class GBlk_IP {
 
     @Test
     void IP() {
-        // Assert that all the shorthand IP evaluates correctly
+        // Assert that all the shorthand IPs evaluates correctly
         ASTfactory.createFromString(GBlk).apply(semanticsVisitor);
         List<IpAddress> ipAdds = new ArrayList<>();
         semanticsVisitor.envR.getRouters().forEach(r -> r.getInterfaces().forEach(ix -> ipAdds.add(ix.getNetworkAddress())));
