@@ -18,8 +18,8 @@ public class parser {
 
     // Syntactically valid program
     @Test
-    void parseTest0() {
-        Parser.fromString(program0);
+    void parseTest0() throws ParserException, IOException, LexerException {
+        Parser.fromString(program0).parse();
     }
 
     // Right bracket missing
