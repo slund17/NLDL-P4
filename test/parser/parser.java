@@ -508,15 +508,18 @@ public class parser {
     void parseTest32() throws Exception {
         String start = "Router R1;";
         String base = "Group g1 { r1; ";
-        String tail = start + base;
+        StringBuilder stringBuilder = new StringBuilder()
+                .append(start)
+                .append(base);
+
         int i = 0;
         for(; i < 10000; i++) {
-            tail += base;
+            stringBuilder.append(base);
         }
         for(int j = 0; j < i+1; j++) {
-            tail += "}";
+            stringBuilder.append("}");
         }
-        Parser.fromString(tail).parse();
+        Parser.fromString(stringBuilder.toString()).parse();
     }
 }
 
