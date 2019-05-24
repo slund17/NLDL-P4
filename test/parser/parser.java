@@ -22,7 +22,7 @@ public class parser {
         Parser.fromString(program0);
     }
 
-    // Left bracket missing
+    // Right bracket missing
     String program1 = "Router r1; Group grp1 { r1; ";
 
     @Test
