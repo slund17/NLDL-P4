@@ -102,10 +102,10 @@ Group common{
         Setting OSPF Area 1;
 
         Connection b1 = Connection{
-            R8(.10/24, f0/0);
-            R7(.11/24, f0/0);
-            R6(.12/24, f0/0);
-            R4(.13/24, f0/0);
+            R8(.1.10/24, f0/0);
+            R7(.1.11/24, f0/0);
+            R6(.1.12/24, f0/0);
+            R4(.1.13/24, f0/0);
         }
 
         Group ptp{
