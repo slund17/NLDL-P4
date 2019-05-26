@@ -50,13 +50,11 @@ public class CodeGenerator {
                 ));
             }
 
-
-            //Creating the configs directory for the configuration files
+            //  Creating the configs directory for the configuration files
             File configsDir = new File("configs");
             if (!configsDir.exists()){
                 configsDir.mkdir();
             }
-
 
             File file = new File(String.format("configs/%s.txt", router.getName()));
             FileWriter fr = null;
@@ -87,28 +85,21 @@ public class CodeGenerator {
                     e.printStackTrace();
                 }
             }
-
-
         }
-
     }
 
-    private void populateNetworkMap() {
+
+    void populateNetworkMap() {
         for (Router router : envR.getRouters()) {
             for (PhysicalInterface physicalInterface : router.getInterfaces()) {
                 IpAddress networkAdd = physicalInterface.getNetworkAddress();
-                if(interfaceNetworkMap.containsKey(networkAdd)){
-                    interfaceNetworkMap.get(networkAdd).add(physicalInterface);
-                } else {
-                    List<PhysicalInterface> list = new ArrayList<>();
-                    list.add(physicalInterface);
-                    interfaceNetworkMap.put(networkAdd, list);
-                }
+                interfaceNetworkMap.computeIfAbsent(networkAdd, nwAdd -> new ArrayList<>());
+                interfaceNetworkMap.get(networkAdd).add(physicalInterface);
             }
         }
     }
 
-
+    // TODO
     //Go through each router and generate its code?
         //HashSet over router settings
         //HashSet over interface settings for each interface

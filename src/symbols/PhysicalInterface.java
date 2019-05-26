@@ -15,6 +15,10 @@ public class PhysicalInterface {
 
     private static Map<Integer, IpAddress> subnetTable = new HashMap<>();
 
+    Set<InterfaceSetting> settingTable = new HashSet<>();
+    IpAddress ip = null;
+    Integer mask = null;
+
     static {
         subnetTable.put(1, new IpAddress(128, 0, 0, 0));
         subnetTable.put(2, new IpAddress(192, 0, 0, 0));
@@ -49,10 +53,6 @@ public class PhysicalInterface {
         subnetTable.put(31, new IpAddress(255, 255, 255, 254));
         subnetTable.put(32, new IpAddress(255, 255, 255, 255));
     }
-
-    Set<InterfaceSetting> settingTable = new HashSet<>();
-    IpAddress ip = null;
-    Integer mask = null;
 
     public PhysicalInterface(Router router, InterfaceIndex inf) {
         this.interfaceIndex = inf;
@@ -90,7 +90,11 @@ public class PhysicalInterface {
     }
 
     public IpAddress getSubnetMask(){
-        return subnetTable.get(mask);
+        IpAddress ipAddress = subnetTable.get(mask);
+        if(ipAddress == null) {
+            throw new NullPointerException("Mask for router " + router.getName() + " is not set for interface " + interfaceIndex);
+        }
+        return ipAddress;
     }
 
     public IpAddress getNetworkAddress(){

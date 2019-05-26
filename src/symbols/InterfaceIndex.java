@@ -12,7 +12,6 @@ public class InterfaceIndex {
     private int index1;
     private int index2;
 
-
     public InterfaceIndex(int first, int second, InterfaceType type) {
         this.index1 = first;
         this.index2 = second;
@@ -45,6 +44,11 @@ public class InterfaceIndex {
     @Override
     public int hashCode() {
         return Objects.hash(index1, index2);
+    }
+
+    @Override
+    public String toString() {
+        return type.name() + " "  + index1 + "/" + index2;
     }
 
     public InterfaceType getInterfaceType() {

@@ -209,10 +209,9 @@ public class PrgGDcl {
             "Router R1, R2;" +
             "Group common { " +
                 "IP 10.3.2.0;" +
-                "R1(.1/28, f0/1)->R2(.18/30, f2/1);" +
                 "R1(.2/28, f0/1)->R2(.18/30, f2/1);" +
+                "R1(.1/28, f0/1)->R2(.18/30, f2/1);" +
             "}";
-
 
     @Test
     void PrgGDcl_11() {
@@ -221,6 +220,6 @@ public class PrgGDcl {
         PhysicalInterface physicalInterface = semanticsVisitor.envR.
                 retrieveSymbol("R1").
                 retrieveInterface(new InterfaceIndex(0,1, InterfaceType.FAST_ETHERNET));
-        assertEquals(2, physicalInterface.getIp().seg4);;
+        assertEquals(1, physicalInterface.getIp().seg4);;
     }
 }
