@@ -22,7 +22,7 @@ public class PrgGDcl {
 
     String program1 =
             "Router R14, R15, R16, R17, R18, R19, R20, R21, R22, R23, R24;" +
-            "Group area3{" +
+            "Group area3 {" +
                 "IP 10.3.2.0;" +
                 "" +
                 "Setting OSPF Area 3 totally-stub;" +
@@ -76,7 +76,7 @@ public class PrgGDcl {
         assertTrue(semanticsVisitor.envC.containsSymbol("b1"));
     }
 
-        // Program with error (using shorthand IP with no group IP defined)
+    // Program with error (using shorthand IP with no group IP defined)
     String program2 =
             "Router R1, R2;" +
             "Group common { " +
@@ -94,8 +94,6 @@ public class PrgGDcl {
         Start start = ASTfactory.createFromString(program2);
         assertThrows(RuntimeException.class, () -> start.apply(semanticsVisitor));
     }
-
-
 
     String program3 =
             "Router R1, R2;" +
@@ -146,13 +144,13 @@ public class PrgGDcl {
     String program5 =
         "Router R1, R2;" +
         "Group common { " +
-        "IP 10.3.2.0;" +
-        "Setting OSPF hello-interval 200;" +
-        "Connection y = R1(.1/28, f0/1)->R2(.18/30, f2/1);" +
+            "IP 10.3.2.0;" +
+            "Setting OSPF hello-interval 200;" +
+            "Connection y = R1(.1/28, f0/1)->R2(.18/30, f2/1);" +
 
             "Group special {" +
                 "Setting OSPF hello-interval 100;" +
-            "y;" +
+                "y;" +
             "}" +
         "}";
 
@@ -188,14 +186,14 @@ public class PrgGDcl {
                 "Setting OSPF hello-interval 200;" +
                 "Connection y = R1(.1/28, f0/1)->R2(.18/30, f2/1);" +
 
-                    "Group special {" +
-                        "Setting OSPF hello-interval 100;" +
+                "Group special {" +
+                    "Setting OSPF hello-interval 100;" +
+                    "y;" +
+                    "Group special3 {" +
+                        "Setting OSPF hello-interval 10;" +
                         "y;" +
-                        "Group special3 {" +
-                            "Setting OSPF hello-interval 10;" +
-                            "y;" +
-                        "}" +
                     "}" +
+                "}" +
             "}";
 
     @Test
@@ -207,31 +205,21 @@ public class PrgGDcl {
         assertEquals(10, ((HelloIntervalSetting)sets.get(0)).interval);
     }
 
-    @Test
-    void PrgGDcl_11() {
-        // Assert that settings get overridden after nesting 2 groups
-        ASTfactory.createFromString(program7).apply(semanticsVisitor);
-        List<InterfaceSetting> sets = new ArrayList<>();
-        semanticsVisitor.envR.retrieveSymbol("R1").getInterfaces().forEach(ix -> sets.addAll(ix.getSettings()));
-        assertEquals(10, ((HelloIntervalSetting)sets.get(0)).interval);
-    }
-
     String program8 =
             "Router R1, R2;" +
             "Group common { " +
                 "IP 10.3.2.0;" +
-                "R1(.1/28, f0/1)->R2(.18/30, f2/1);" +
                 "R1(.2/28, f0/1)->R2(.18/30, f2/1);" +
+                "R1(.1/28, f0/1)->R2(.18/30, f2/1);" +
             "}";
 
-    // Assert that connections defined on the same interface get overwritten
     @Test
-    void PrgGDcl_12() {
-        // Assert that settings get overridden after nesting 2 groups
+    void PrgGDcl_11() {
+        // Assert that connections defined on the same interface get overwritten
         ASTfactory.createFromString(program8).apply(semanticsVisitor);
         PhysicalInterface physicalInterface = semanticsVisitor.envR.
                 retrieveSymbol("R1").
                 retrieveInterface(new InterfaceIndex(0,1, InterfaceType.FAST_ETHERNET));
-        assertEquals(2, physicalInterface.getIp().seg4);;
+        assertEquals(1, physicalInterface.getIp().seg4);;
     }
 }

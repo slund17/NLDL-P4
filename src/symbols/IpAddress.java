@@ -37,4 +37,9 @@ public class IpAddress {
     public int hashCode() {
         return Objects.hash(seg1, seg2, seg3, seg4);
     }
+
+    @Override
+    public String toString() {
+        return Integer.toString(seg1) + "." + Integer.toString(seg2) + "." + Integer.toString(seg3) + "." + Integer.toString(seg4);
+    }
 }
