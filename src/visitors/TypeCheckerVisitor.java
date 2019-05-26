@@ -92,13 +92,20 @@ public class TypeCheckerVisitor extends DepthFirstAdapter {
     public void outAVariablesGroupBlock(AVariablesGroupBlock node) {
         boolean areChildrenTypeCorrect = true;
         boolean varIsDefinedInSymbolTable;
+        Type actualType;
         String varName;
         for (PVar var : node.getVar()) {
             varName = (String)getOut(var);
             varIsDefinedInSymbolTable = symbolTable.containsKey(varName);
-            if(!varIsDefinedInSymbolTable){
+            if(varIsDefinedInSymbolTable){
+                actualType = symbolTable.get(varName);
+                if(isTypeCorrect(actualType, Type.SEGMENT)){
+                    areChildrenTypeCorrect = false;
+                    throw new RuntimeException("The variable " +varName+ " is of type Segment.");
+                }
+            } else {
                 areChildrenTypeCorrect = false;
-                throw new RuntimeException("The variable" + getOut(var) + "is not previously defined.");
+                throw new RuntimeException("The variable " + varName + " is not previously defined.");
             }
         }
 
