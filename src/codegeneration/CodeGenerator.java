@@ -65,11 +65,12 @@ public class CodeGenerator {
                 fr = new FileWriter(file);
                 br = new BufferedWriter(fr);
 
-                for (RouterConfigurationEmitter emitter : routerEmitters) {
+
+                for (InterfaceConfigurationEmitter emitter : interfaceEmitters) {
                     emitter.writeCommand(br);
                 }
 
-                for (InterfaceConfigurationEmitter emitter : interfaceEmitters) {
+                for (RouterConfigurationEmitter emitter : routerEmitters) {
                     emitter.writeCommand(br);
                 }
 
@@ -107,14 +108,4 @@ public class CodeGenerator {
             }
         }
     }
-
-
-    //Go through each router and generate its code?
-        //HashSet over router settings
-        //HashSet over interface settings for each interface
-        //interfaces can emmit to either the router settings or its interface settings
-
-    //Create files and input streams for each router
-
-    //Write code?
 }
