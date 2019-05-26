@@ -22,6 +22,70 @@ Group special-routers{
 Group common{
     default-intervals;
 
+    Group area0{
+        IP 10.0.0.0;
+        Setting OSPF Area 0;
+
+        Connection b4 = Connection{
+            R10(.3/24, f0/1);
+            R11(.2/24, f0/0);
+            R12(.20/24, f0/0);
+            R13(.1/24, f0/0);
+        }
+
+        Group ptp{
+            Setting OSPF Network point-to-point;
+            R14(.255.1/30, f0/0)->R13(.255.2/30, f0/1);
+            Connection c4 = R12(.255.6/30, f0/1)->R20(.255.5/30, f0/0);
+            R10(.255.9/30, f0/0)->R9(.255.10/30, f0/1);
+            R10(.255.14/30, f1/0)->R5(.255.13/30, f0/1);
+        }
+    }
+
+
+    Group area1{
+        IP 10.1.0.0;
+        Setting OSPF Area 1 nssa;
+        Setting OSPF Default-Metric 77;
+
+        R24;
+
+        Group increasedPriority {
+            Setting OSPF Priority 10;
+
+            Connection b1 = Connection{
+                R8(.1.10/24, f0/0);
+                R7(.1.11/24, f0/0);
+                R6(.1.12/24, f0/0);
+                R4(.1.13/24, f0/0);
+            }
+        }
+
+        Group ptp{
+            Setting OSPF Network point-to-point;
+            R9(.1/30, f0/0)->R4(.2/30, f0/1);
+            R4(.5/30, f1/0)->R24(.6/30, f0/0);
+            R24(.9/30, f0/1)->R8(.10/30, f0/1);
+        }
+    }
+
+    Group area2{
+        IP 10.2.30.0;
+        Setting OSPF Area 2 totally-nssa;
+
+        Connection b2 = Connection{
+            R5(.4/29, f0/0);
+            R3(.1/29, f0/0);
+            R1(.2/29, f0/0);
+            R2(.3/29, f0/0);
+        }
+
+        Group ptp{
+            Setting OSPF Network point-to-point;
+            R2(.0.2/30, f0/1)->R23(.0.1/30, f0/0);
+        }
+    }
+
     Group area3{
         IP 10.3.2.0;
 
@@ -43,36 +107,15 @@ Group common{
         }
     }
 
-    Group area0{
-        IP 10.0.0.0;
-        Setting OSPF Area 0;
-
-        Connection b4 = Connection{
-            R10(.3/24, f0/1);
-            R11(.2/24, f0/0);
-            R12(.20/24, f0/0);
-            R13(.1/24, f0/0);
-        }
-
-        Group ptp{
-            Setting OSPF Network point-to-point;
-            R14(.255.1/30, f0/0)->R13(.255.2/30, f0/1);
-            R12(.255.6/30, f0/1)->R20(.255.5/30, f0/0);
-            R10(.255.9/30, f0/0)->R9(.255.10/30, f0/1);
-            R10(.255.14/30, f1/0)->R5(.255.13/30, f0/1);
-        }
-    }
-
     Group area4{
         IP 10.4.0.0;
         Setting OSPF Area 4 stub;
-        special-intervals;
+        special-interval;
 
         Connection b3 = Connection{
             R20(.1/24, f0/1);
             R21(.2/24, f0/0);
             R22(.3/24, f0/0);
-        }
 
         Group ptp{
             Setting OSPF Network point-to-point;
@@ -80,43 +123,8 @@ Group common{
             R22(.101.1/24, f0/1)->PC-5;
         }
     }
-
-    Group area2{
-        IP 10.2.30.0;
-        Setting OSPF Area 2;
-
-        Connection b2 = Connection{
-            R5(.4/29, f0/0);
-            R3(.1/29, f0/0);
-            R1(.2/29, f0/0);
-            R2(.3/29, f0/);
-        }
-
-        Group ptp{
-            Setting OSPF Network point-to-point;
-            R2(.0.2/30, f0/1)->R23(.0.1/30, f0/0);
-        }
-    }
-
-    Group area1{
-        IP 10.1.0.0;
-        Setting OSPF Area 1;
-
-        Connection b1 = Connection{
-            R8(.1.10/24, f0/0);
-            R7(.1.11/24, f0/0);
-            R6(.1.12/24, f0/0);
-            R4(.1.13/24, f0/0);
-        }
-
-        Group ptp{
-            Setting OSPF Network point-to-point;
-            R9(.1/30, f0/0)->R4(.2/30, f0/1);
-            R4(.5/30, f1/0)->R24(.6/30, f0/0);
-            R24(.9/30, f0/1)->R8(.10/30, f0/1);
-        }
-    }
 }
+
 
 Group broadcasts{
 	Setting OSPF Network point-to-multipoint non-broadcast;
