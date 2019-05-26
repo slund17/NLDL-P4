@@ -25,6 +25,7 @@ public class CodeGenerator {
 
     public void generate(){
         populateNetworkMap();
+        createOutputDirectory();
 
         for (Router router : envR.getRouters()) {
             Set<RouterConfigurationEmitter> routerEmitters = new HashSet<>();
@@ -50,12 +51,6 @@ public class CodeGenerator {
                 ));
             }
 
-            //  Creating the configs directory for the configuration files
-            File configsDir = new File("configs");
-            if (!configsDir.exists()){
-                configsDir.mkdir();
-            }
-
             File file = new File(String.format("configs/%s.txt", router.getName()));
             FileWriter fr = null;
             BufferedWriter br = null;
@@ -63,11 +58,12 @@ public class CodeGenerator {
                 fr = new FileWriter(file);
                 br = new BufferedWriter(fr);
 
-                for (RouterConfigurationEmitter emitter : routerEmitters) {
+
+                for (InterfaceConfigurationEmitter emitter : interfaceEmitters) {
                     emitter.writeCommand(br);
                 }
 
-                for (InterfaceConfigurationEmitter emitter : interfaceEmitters) {
+                for (RouterConfigurationEmitter emitter : routerEmitters) {
                     emitter.writeCommand(br);
                 }
 
@@ -88,6 +84,23 @@ public class CodeGenerator {
         }
     }
 
+    private void createOutputDirectory() {
+        //  Creating the configs directory for the configuration files
+        File configsDir = new File("configs");
+        if (!configsDir.exists()){
+            configsDir.mkdir();
+        } else
+        if(configsDir.list() != null){
+            // If the configs directory already exists and contains files then delete them
+            if(Objects.requireNonNull(configsDir.list()).length != 0){
+                for(String s: Objects.requireNonNull(configsDir.list())){
+                    File currentFile = new File(configsDir.getPath(),s);
+                    currentFile.delete();
+                }
+            }
+        }
+    }
+
 
     void populateNetworkMap() {
         for (Router router : envR.getRouters()) {
@@ -99,13 +112,4 @@ public class CodeGenerator {
         }
     }
 
-    // TODO
-    //Go through each router and generate its code?
-        //HashSet over router settings
-        //HashSet over interface settings for each interface
-        //interfaces can emmit to either the router settings or its interface settings
-
-    //Create files and input streams for each router
-
-    //Write code?
 }

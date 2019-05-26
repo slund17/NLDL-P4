@@ -27,7 +27,7 @@ public class InterfaceConfigurationEmitter extends ConfigurationEmitter{
     public void writeCommand(BufferedWriter writer) throws IOException {
         InterfaceIndex ifI = inf.getInterfaceIndex();
         writer.write("Configure Terminal" + System.getProperty("line.separator"));
-        if(ifI.getIndex2()<0){
+        if(ifI.getIndex2()<0) {
             writer.write(String.format("Interface %s %d", ifI.getInterfaceType().toString(), ifI.getIndex1())+System.getProperty("line.separator"));
         } else{
             writer.write(String.format("Interface %s %d/%d", ifI.getInterfaceType().toString(), ifI.getIndex1(), ifI.getIndex2())+System.getProperty("line.separator"));
