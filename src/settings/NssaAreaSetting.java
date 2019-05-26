@@ -11,7 +11,6 @@ import java.util.Set;
 
 public class NssaAreaSetting extends  AreaSetting {
 
-
     public NssaAreaSetting(int value) {
         super(value);
     }

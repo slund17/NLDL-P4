@@ -92,7 +92,7 @@ public class PhysicalInterface {
     public IpAddress getSubnetMask(){
         IpAddress ipAddress = subnetTable.get(mask);
         if(ipAddress == null) {
-            throw new RuntimeException("Mask for router " + router.getName() + " is not set for interface " + interfaceIndex);
+            throw new NullPointerException("Mask for router " + router.getName() + " is not set for interface " + interfaceIndex);
         }
         return ipAddress;
     }

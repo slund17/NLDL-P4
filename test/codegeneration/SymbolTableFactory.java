@@ -16,6 +16,7 @@ public class SymbolTableFactory {
     public static final String ROUTER_NAME1 = "RarRouter";
     public static final String ROUTER_NAME2 = "C3PO";
     public static final String ROUTER_NAME3 = "R2D2";
+    public static final String ROUTER_NAME4 = "blank";
 
     // Create full symbol tables with routers and connections
     public static RouterSymbolTable table1() {
@@ -57,7 +58,6 @@ public class SymbolTableFactory {
         physicalInterface2.enterSetting(new DeadIntervalSetting(20));
         physicalInterface2.enterMask(30);
 
-
         InterfaceIndex interfaceIndex3 = new InterfaceIndex(1,2,InterfaceType.ETHERNET);
         PhysicalInterface physicalInterface3 = new PhysicalInterface(router2, interfaceIndex3);
         physicalInterface3.enterMask(20);
@@ -66,9 +66,12 @@ public class SymbolTableFactory {
         physicalInterface3.enterMask(30);
         physicalInterface3.enterIP(new IpAddress(10, 200, 100, 50));
 
+        Router blankRouter = new Router(ROUTER_NAME4);
+
         RouterSymbolTable routerSymbolTable = new RouterSymbolTable();
         routerSymbolTable.enterSymbol(router2.getName(), router2);
         routerSymbolTable.enterSymbol(router.getName(), router);
+        routerSymbolTable.enterSymbol(blankRouter.getName(), blankRouter);
         return routerSymbolTable;
     }
 
@@ -79,7 +82,7 @@ public class SymbolTableFactory {
 
     @Test
     void tableSize2() {
-        assertEquals(2, table2().getRouters().size());
+        assertEquals(3, table2().getRouters().size());
     }
 
     @Test
