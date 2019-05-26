@@ -12,6 +12,11 @@ Settings special-intervals{
 	OSPF dead-interval 15;
 }
 
+Settings network-intervals{
+	OSPF hello-interval 100;
+	OSPF dead-interval 50;
+}
+
 Group special-routers{
     Setting DNS Server 8.8.8.8;
 
@@ -73,11 +78,16 @@ Group common{
         IP 10.2.30.0;
         Setting OSPF Area 2 totally-nssa;
 
-        Connection b2 = Connection{
-            R5(.4/29, f0/0);
-            R3(.1/29, f0/0);
-            R1(.2/29, f0/0);
-            R2(.3/29, f0/0);
+        Group non-broadcast{
+            network-intervals;
+            Setting OSPF Network Non-Broadcast;
+
+            Connection b2 = Connection{
+                R5(.4/29, f0/0);
+                R3(.1/29, f0/0);
+                R1(.2/29, f0/0);
+                R2(.3/29, f0/0);
+            }
         }
 
         Group ptp{
@@ -112,10 +122,14 @@ Group common{
         Setting OSPF Area 4 stub;
         special-intervals;
 
-        Connection b3 = Connection{
-            R20(.1/24, f0/1);
-            R21(.2/24, f0/0);
-            R22(.3/24, f0/0);
+        Group p2multipoint{
+            network-intervals;
+            Setting OSPF Network Point-to-Multipoint;
+            Connection b3 = Connection{
+                R20(.1/24, f0/1);
+                R21(.2/24, f0/0);
+                R22(.3/24, f0/0);
+            }
         }
 
         Group ptp{
@@ -127,10 +141,8 @@ Group common{
 
 }
 
-
 Group broadcasts{
+    network-intervals;
 	Setting OSPF Network point-to-multipoint non-broadcast;
-	Setting OSPF hello-interval 100;
-	Setting OSPF dead-interval 50;
-	b1, b2, b3, b4;
+	b1, b4;
 }
