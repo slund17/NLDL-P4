@@ -1,5 +1,6 @@
 Router R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13;
 Router R14, R15, R16, R17, R18, R19, R20, R21, R22, R23, R24;
+Segment PC-2, PC-3, PC-4, PC-5, PC-6;
 
 Settings default-intervals{
 	OSPF hello-interval 3;
@@ -47,15 +48,15 @@ Group common{
         Setting OSPF Area 0;
 
         Connection b4 = Connection{
-            R13(.1/24, f0/0);
-            R12(.20/24, f0/0);
             R10(.3/24, f0/1);
             R11(.2/24, f0/0);
+            R12(.20/24, f0/0);
+            R13(.1/24, f0/0);
         }
 
         Group ptp{
             Setting OSPF Network point-to-point;
-            R14(.255.1/30, f0/0)->R13(.255.1/30, f0/1);
+            R14(.255.1/30, f0/0)->R13(.255.2/30, f0/1);
             R12(.255.6/30, f0/1)->R20(.255.5/30, f0/0);
             R10(.255.9/30, f0/0)->R9(.255.10/30, f0/1);
             R10(.255.14/30, f1/0)->R5(.255.13/30, f0/1);
@@ -88,7 +89,7 @@ Group common{
             R5(.4/29, f0/0);
             R3(.1/29, f0/0);
             R1(.2/29, f0/0);
-            R2(.3/29, f0/0);
+            R2(.3/29, f0/);
         }
 
         Group ptp{
