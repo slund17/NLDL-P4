@@ -2,6 +2,9 @@ package systemTest;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -9,7 +12,7 @@ import java.util.*;
 public class SystemTestTest {
 
     @Test
-    void fileComparison() throws FileNotFoundException {
+    void systemTest() throws FileNotFoundException {
         File compilerFilesDir = new File("testConfigs/compilerFiles");
         File manualFilesDir = new File("testConfigs/manualConfigFiles");
 
@@ -17,25 +20,20 @@ public class SystemTestTest {
         List<ComparableFile> manualFiles = getFiles(manualFilesDir);
 
         for (int i = 0; i < manualFiles.size(); i++) {
-            if(!compareFiles(manualFiles.get(i), compilerFiles.get(i))){
-                throw new RuntimeException("Files didn't match: " + manualFiles.get(i).getRouterId());
-            }
+            assertTrue(compareFiles(manualFiles.get(i), compilerFiles.get(i)));
         }
+
+        System.out.println("YeeeeeHhhhaaaaaaa!!!!");
     }
 
     private boolean compareFiles(ComparableFile manualFile, ComparableFile compilerFile) {
-        if(manualFile.getLinesList().size() != compilerFile.getLinesList().size()){
-            return false;
-        }
+        assertEquals(manualFile.getLinesList().size(), manualFile.getLinesList().size());
 
         for (int i = 0; i < manualFile.getLinesList().size(); i++) {
             String manualLine = manualFile.getLinesList().get(i);
             String compilerLine = compilerFile.getLinesList().get(i);
 
-            if(!manualLine.equalsIgnoreCase(compilerLine)){
-                return false;
-            }
-
+            assertTrue(manualLine.equalsIgnoreCase(compilerLine), compilerFile.getRouterId() + "; " + compilerLine);
         }
 
         return true;
