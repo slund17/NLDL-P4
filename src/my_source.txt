@@ -13,8 +13,8 @@ Settings special-intervals{
 }
 
 Settings network-intervals{
-	OSPF hello-interval 100;
-	OSPF dead-interval 50;
+	OSPF hello-interval 50;
+	OSPF dead-interval 100;
 }
 
 Group special-routers{

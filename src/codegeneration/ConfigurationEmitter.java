@@ -30,6 +30,12 @@ public abstract class ConfigurationEmitter {
             writer.write(System.getProperty("line.separator"));
         }
         writer.write("end" + System.getProperty("line.separator"));
+        writer.write("!" + System.getProperty("line.separator"));
+        writer.write("!" + System.getProperty("line.separator"));
+        writer.write("!" + System.getProperty("line.separator"));
+        writer.write("!" + System.getProperty("line.separator"));
+        writer.write("!" + System.getProperty("line.separator"));
+
     }
 
     @Override
