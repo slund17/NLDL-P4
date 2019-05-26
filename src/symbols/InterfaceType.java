@@ -15,8 +15,4 @@ public enum InterfaceType {
     public String toString(){
         return name;
     }
-
-
-
-
 }
