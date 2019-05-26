@@ -13,8 +13,6 @@ import java.util.Set;
 public class PrioritySetting extends InterfaceSetting {
     public final int priorityVal;
 
-
-
     public PrioritySetting(int integer) {
         super(SettingType.OSPF_PRIORITY);
         this.priorityVal = integer;

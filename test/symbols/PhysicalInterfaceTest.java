@@ -46,4 +46,10 @@ class PhysicalInterfaceTest {
         physicalInterface.enterMask(20);
         assertEquals(new IpAddress(255, 255, 240, 0), physicalInterface.getSubnetMask());
     }
+
+    @Test
+    void noMask() {
+        PhysicalInterface physicalInterface = new PhysicalInterface(null, new InterfaceIndex(0,1, InterfaceType.FAST_ETHERNET));
+        assertThrows(RuntimeException.class, physicalInterface::getSubnetMask);
+    }
 }

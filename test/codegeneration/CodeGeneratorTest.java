@@ -20,7 +20,7 @@ class CodeGeneratorTest {
     RouterSymbolTable routerSymbolTable1 = SymbolTableFactory.table1();
     RouterSymbolTable routerSymbolTable2 = SymbolTableFactory.table2();
 
-    // Delete all generated configs
+    // Delete all previously generated configs
     @BeforeEach
     void cleanup() {
         routerSymbolTable1.getRouters().forEach(router -> nameToPath(router.getName()).toFile().delete());
@@ -31,15 +31,14 @@ class CodeGeneratorTest {
     void populateNetworkMap1() {
         CodeGenerator codeGenerator = new CodeGenerator(SymbolTableFactory.table1());
         codeGenerator.populateNetworkMap();
-        assertNotNull(new IpAddress(10, 20, 30, 40));
+        assertNotNull(codeGenerator.interfaceNetworkMap.get(new IpAddress(10, 20, 30, 40)));
     }
 
     @Test
     void populateNetworkMap2() {
         CodeGenerator codeGenerator = new CodeGenerator(SymbolTableFactory.table2());
         codeGenerator.populateNetworkMap();
-
-        int x = 5;
+        assertNotNull(codeGenerator.interfaceNetworkMap.get(new IpAddress(100, 200, 155, 20)));
     }
 
 
@@ -97,9 +96,10 @@ class CodeGeneratorTest {
         );
     }
 
+
     @Test
     void table2Size() {
-        assertEquals(2, routerSymbolTable2.getRouters().size());
+        assertEquals(3, routerSymbolTable2.getRouters().size());
     }
 
     @Test
@@ -109,13 +109,11 @@ class CodeGeneratorTest {
         assertEquals(stringList.get(0), "Configure Terminal");
     }
 
-
     @Test
     void table2test2() throws IOException {
         new CodeGenerator(routerSymbolTable2).generate();
         List<String> stringList = Files.readAllLines(nameToPath(SymbolTableFactory.ROUTER_NAME3));
     }
-
 
     // Helper functions
     private Path nameToPath(String routerName) {
