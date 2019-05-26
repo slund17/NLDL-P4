@@ -25,6 +25,7 @@ public class CodeGenerator {
 
     public void generate(){
         populateNetworkMap();
+        createOutputDirectory();
 
         for (Router router : envR.getRouters()) {
             Set<RouterConfigurationEmitter> routerEmitters = new HashSet<>();
@@ -48,12 +49,6 @@ public class CodeGenerator {
                                 mask.seg1, mask.seg2, mask.seg3, mask.seg4),
                         "no shutdown"
                 ));
-            }
-
-            //  Creating the configs directory for the configuration files
-            File configsDir = new File("configs");
-            if (!configsDir.exists()){
-                configsDir.mkdir();
             }
 
             File file = new File(String.format("configs/%s.txt", router.getName()));
@@ -89,6 +84,23 @@ public class CodeGenerator {
         }
     }
 
+    private void createOutputDirectory() {
+        //  Creating the configs directory for the configuration files
+        File configsDir = new File("configs");
+        if (!configsDir.exists()){
+            configsDir.mkdir();
+        } else
+        if(configsDir.list() != null){
+            // If the configs directory already exists and contains files then delete them
+            if(Objects.requireNonNull(configsDir.list()).length != 0){
+                for(String s: Objects.requireNonNull(configsDir.list())){
+                    File currentFile = new File(configsDir.getPath(),s);
+                    currentFile.delete();
+                }
+            }
+        }
+    }
+
 
     void populateNetworkMap() {
         for (Router router : envR.getRouters()) {
@@ -99,4 +111,5 @@ public class CodeGenerator {
             }
         }
     }
+
 }
