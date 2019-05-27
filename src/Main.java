@@ -15,10 +15,22 @@ public class Main {
     public static void main(String[] args) throws IOException, ParserException, LexerException {
         TypeCheckerVisitor typeChecker = new TypeCheckerVisitor();
         SemanticsVisitor semantics = new SemanticsVisitor();
-        Start abstractSyntaxTree = ASTfactory.createFromFile("src//my_source.txt");
+        String inputFile = "src//my_source.txt";
+
+        // If inputfile path provided as program argument then load it.
+        if(args.length == 1){
+            inputFile = args[0];
+        }
+
+        // Creating a AST
+        Start abstractSyntaxTree = ASTfactory.createFromFile(inputFile);
+
+        // Applying visitors to AST
         abstractSyntaxTree.apply(typeChecker);
         abstractSyntaxTree.apply(semantics);
         //start.apply(new PrintVisitor());
+
+        // Code generation
         CodeGenerator codeGenerator = new CodeGenerator(semantics.envR);
         codeGenerator.generate();
     }

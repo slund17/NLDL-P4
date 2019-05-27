@@ -22,8 +22,6 @@ public class SystemTestTest {
         for (int i = 0; i < manualFiles.size(); i++) {
             assertTrue(compareFiles(manualFiles.get(i), compilerFiles.get(i)));
         }
-
-        System.out.println("YeeeeeHhhhaaaaaaa!!!!");
     }
 
     private boolean compareFiles(ComparableFile manualFile, ComparableFile compilerFile) {

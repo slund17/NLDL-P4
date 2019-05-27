@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InterfaceConfigurationEmitterTest {
 
-    File file = new File("configs/test/" +this.getClass().getSimpleName());
+    File file = new File("test/testConfigs/test/" +this.getClass().getSimpleName());
 
     @Test
     void testExists() {

@@ -76,7 +76,7 @@ class CodeGeneratorTest {
     void table1test3() throws IOException {
         new CodeGenerator(routerSymbolTable1).generate();
         List<String> stringList = Files.readAllLines(nameToPath(SymbolTableFactory.ROUTER_NAME1));
-        assertEquals("Write", stringList.get(stringList.size() - 1));
+        assertEquals("!", stringList.get(stringList.size() - 1));
     }
 
     @Test
