@@ -52,13 +52,6 @@ Helpers
     letter              = ascii_small | ascii_caps | '_' | '-';
     letter_or_digit     = letter | digit;
 
-    /*
-        ip_segment =  '25'['0'..'5'] | '2'['0'..'4']['0'..'9'] | ('0'|'1')?['0'..'9']['0'..'9']?;
-        ip_address = ip_segment '.' ip_segment '.' ip_segment '.' ip_segment;
-        ip_shorthand = '.' ip_segment '.' ip_segment '.' ip_segment |  '.' ip_segment '.' ip_segment |  '.' ip_segment;
-        p_interface = 'fa' digit+ '/' digit+;
-    */
-
 
 /****************************
 * Begin States **************
@@ -71,9 +64,9 @@ States
 *********************************/
 Tokens
 
-    /*********************
-    * Begin IDL Keywords *
-    *********************/
+    /*****************
+    * Begin Keywords *
+    *****************/
     router = r o u t e r;
     group = g r o u p;
     segment = s e g m e n t;
@@ -86,12 +79,6 @@ Tokens
     dot = '.';
 
     interface_type = f | f e | g | g b | e;
-
-    /*ip_address = ip_address;*/
-    /*ip_shorthand = ip_shorthand;*/
-
-
-    /*p_interface = p_interface;*/
 
     protocol = o s p f | i s i s;
 
@@ -228,8 +215,6 @@ s =     {identifier} identifier |
         {num}const | {string}string | {ip}ip;
 
 group_dcl = var group_block*;
-
-/*v = {num}const | {string}string | {ip}ip;*/
 
 group_block = {variables} var*
     | {setting} setting_block
