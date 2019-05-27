@@ -13,8 +13,8 @@ public class SystemTestTest {
 
     @Test
     void systemTest() throws FileNotFoundException {
-        File compilerFilesDir = new File("testConfigs/compilerFiles");
-        File manualFilesDir = new File("testConfigs/manualConfigFiles");
+        File compilerFilesDir = new File("test/testConfigs/compilerFiles");
+        File manualFilesDir = new File("test/testConfigs/manualConfigFiles");
 
         List<ComparableFile> compilerFiles = getFiles(compilerFilesDir);
         List<ComparableFile> manualFiles = getFiles(manualFilesDir);
